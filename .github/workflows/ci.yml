@@ -79,6 +79,6 @@ jobs:
       run: pdoc --html unmanic_api
     - name: Deploy Documentation
       uses: JamesIves/github-pages-deploy-action@v4.2.2
-        with:
-          branch: docs
-          folder: html/unmanic_api
+      with:
+        branch: docs
+        folder: html/unmanic_api
