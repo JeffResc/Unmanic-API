@@ -1,133 +1,200 @@
-import urllib3
+"""Asynchronous Python client for Unmanic."""
+from typing import Dict
+from aiohttp.client import ClientSession
 import json
 
-class Unmanic:
-    def __init__(self, host='localhost', port=8888, use_ssl=False, ignore_ssl_cert=False):
-        # Check types for sanity
-        if not isinstance(host, str):
-            raise TypeError('"host" must be a string')
-        if not isinstance(port, int):
-            raise Exception('"port" must be of type integer')
-        if not isinstance(use_ssl, bool):
-            raise Exception('"use_ssl" must be of type boolean')
-        if not isinstance(ignore_ssl_cert, bool):
-            raise Exception('"ignore_ssl_cert" must be of type boolean')
+from .client import Client
 
-        # Set connection protocol
-        if not use_ssl:
-            proto = 'http'
-        else:
-            proto = 'https'
+class Unmanic(Client):
+    """
+    Main class for Python API.
+    
+    Args:
 
-        # Set base URL for contacting the API
-        self.base_url = proto + '://' + host + ':' + str(port) + '/unmanic/api/v2'
+    host: The hostname or IP address of the Unmanic server.
 
-        # Set up HTTP connection pool
-        self.ignore_ssl_cert = ignore_ssl_cert
-        self.http = urllib3.PoolManager()
+    port: The port number of the Unmanic server.
 
-        # Perform a test connection to the API (get version)
-        try:
-            self.get_version()
-        except:
-            raise Exception('Could not connect to API')
+    base_path: The base path of the API on the Unmanic server.
+
+    request_timeout: The request timeout in seconds.
+
+    session: The aiohttp.ClientSession to use.
+
+    tls: Whether to use TLS.
+
+    verify_ssl: Whether to verify the SSL certificate.
+
+    user_agent: The user agent to use.
+    """
+
+    def __init__(
+        self,
+        host: str = 'localhost',
+        port: int = 8888,
+        base_path: str = "/unmanic/api/v2/",
+        request_timeout: int = 8,
+        session: ClientSession = None,
+        tls: bool = False,
+        verify_ssl: bool = True,
+        user_agent: str = None,
+    ) -> None:
+        """Initilize connection with Unmanic"""
+        super().__init__(
+            host=host,
+            base_path=base_path,
+            port=port,
+            request_timeout=request_timeout,
+            session=session,
+            tls=tls,
+            verify_ssl=verify_ssl,
+            user_agent=user_agent,
+        )
+
+    async def get_installation_name(self) -> str:
+        """
+        Get Unmanic installation name
         
+        Returns:
+            str: Unmanic installation name
+        """
+        results = await self.get_settings()
+        return results['installation_name']
 
-    # Get version of the API
-    def get_version(self):
-        if self.ignore_ssl_cert:
-            r = self.http.request('GET', self.base_url + '/version/read', cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('GET', self.base_url + '/version/read')
-        if r.status == 200:
-            return json.loads(r.data.decode('utf-8'))['version']
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+    async def get_version(self) -> str:
+        """
+        Get Unmanic version
+        
+        Returns:
+            str: Unmanic server version
+        """
+        results = await self._request("version/read")
+        return results['version']
 
-    # Pause a worker, provided its ID (e.g. 'W0', 'W1', etc.)
-    def pause_worker(self, worker_id):
-        if self.ignore_ssl_cert:
-            r = self.http.request('POST', self.base_url + '/workers/worker/pause', headers={'Content-Type': 'application/json'}, body=json.dumps({'worker_id': worker_id}), cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('POST', self.base_url + '/workers/worker/pause', headers={'Content-Type': 'application/json'}, body=json.dumps({'worker_id': worker_id}))
-        if r.status == 200:
-            return True
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+    async def pause_worker(self, worker_id: str) -> bool:
+        """
+        Pause a worker
 
-    # Pause all workers
-    def pause_all_workers(self):
-        if self.ignore_ssl_cert:
-            r = self.http.request('POST', self.base_url + '/workers/worker/pause/all', cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('POST', self.base_url + '/workers/worker/pause/all')
-        if r.status == 200:
-            return True
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+        Args:
 
-    # Resume a worker, provided its ID (e.g. 'W0', 'W1', etc.)
-    def resume_worker(self, worker_id):
-        if self.ignore_ssl_cert:
-            r = self.http.request('POST', self.base_url + '/workers/worker/resume', headers={'Content-Type': 'application/json'}, body=json.dumps({'worker_id': worker_id}), cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('POST', self.base_url + '/workers/worker/resume', headers={'Content-Type': 'application/json'}, body=json.dumps({'worker_id': worker_id}))
-        if r.status == 200:
-            return True
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+        worker_id: The worker id.
 
-    # Resume all workers
-    def resume_all_workers(self):
-        if self.ignore_ssl_cert:
-            r = self.http.request('POST', self.base_url + '/workers/worker/resume/all', cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('POST', self.base_url + '/workers/worker/resume/all')
-        if r.status == 200:
-            return True
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+        Returns:
+            bool: True if successful.
+        """
+        results = await self._request(f"workers/worker/pause", method='POST', data=json.dumps({"worker_id": worker_id}))
+        return results['success']
 
-    # Terminate a worker, provided its ID (e.g. 'W0', 'W1', etc.)
-    def terminate_worker(self, worker_id):
-        if self.ignore_ssl_cert:
-            r = self.http.request('POST', self.base_url + '/workers/worker/terminate', headers={'Content-Type': 'application/json'}, body=json.dumps({'worker_id': worker_id}), cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('POST', self.base_url + '/workers/worker/terminate', headers={'Content-Type': 'application/json'}, body=json.dumps({'worker_id': worker_id}))
-        if r.status == 200:
-            return True
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+    async def pause_all_workers(self) -> bool:
+        """
+        Pause all workers
 
-    # Get status of all workers
-    def get_workers_status(self):
-        if self.ignore_ssl_cert:
-            r = self.http.request('GET', self.base_url + '/workers/status', cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('GET', self.base_url + '/workers/status')
-        if r.status == 200:
-            return json.loads(r.data.decode('utf-8'))['workers_status']
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+        Returns:
+            bool: True if successful.
+        """
+        results = await self._request("workers/worker/pause/all", method='POST')
+        return results['success']
 
-    # Get number of workers
-    def get_workers_count(self):
-        if self.ignore_ssl_cert:
-            r = self.http.request('GET', self.base_url + '/settings/read', cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('GET', self.base_url + '/settings/read')
-        if r.status == 200:
-            return json.loads(r.data.decode('utf-8'))['settings']['number_of_workers']
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+    async def resume_worker(self, worker_id: str) -> bool:
+        """
+        Resume a worker
 
-    # Set number of workers
-    def set_workers_count(self, number_of_workers):
-        if self.ignore_ssl_cert:
-            r = self.http.request('POST', self.base_url + '/settings/write', headers={'Content-Type': 'application/json'}, body=json.dumps({'settings': {'number_of_workers': number_of_workers}}), cert_reqs='CERT_NONE', assert_hostname=False)
-        else:
-            r = self.http.request('POST', self.base_url + '/settings/write', headers={'Content-Type': 'application/json'}, body=json.dumps({'settings': {'number_of_workers': number_of_workers}}))
-        if r.status == 200:
-            return True
-        else:
-            raise Exception('API returned an error, HTTP error code: ' + str(r.status))
+        Args:
+
+        worker_id: The worker id.
+
+        Returns:
+            bool: True if successful.
+        """
+        results = await self._request(f"workers/worker/resume", method='POST', data=json.dumps({"worker_id": worker_id}))
+        return results['success']
+
+    async def resume_all_workers(self) -> bool:
+        """
+        Resume all workers
+
+        Returns:
+            bool: True if successful.
+        """
+        results = await self._request("workers/worker/resume/all", method='POST')
+        return results['success']
+
+    async def terminate_worker(self, worker_id) -> bool:
+        """
+        Terminate a worker
+
+        Args:
+
+        worker_id: The worker id.
+
+        Returns:
+            bool: True if successful.
+        """
+        results = await self._request("workers/worker/terminate", method='POST', data=json.dumps({"worker_id": worker_id}))
+        return results['success']
+
+    async def get_workers_status(self) -> Dict:
+        """
+        Get workers status
+
+        Returns:
+            Dict: Workers status
+        """
+        results = await self._request("workers/status")
+        return results['workers_status']
+
+    async def get_settings(self) -> Dict:
+        """
+        Get Unmanic settings
+
+        Returns:
+            Dict: Unmanic server settings
+        """
+        results = await self._request("settings/read")
+        return results['settings']
+
+    async def set_settings(self, settings: Dict) -> bool:
+        """
+        Set Unmanic settings
+
+        Args:
+
+        settings: The settings to set.
+
+        Returns:
+            bool: True if successful.
+        """
+        results = await self._request("settings/write", method='POST', data=json.dumps({'settings': settings}))
+        return results['success']
+
+    async def get_workers_count(self) -> int:
+        """
+        Get workers count
+        
+        Returns:
+            int: Number of workers
+        """
+        results = await self.get_settings()
+        return results['number_of_workers']
+
+    async def set_workers_count(self, number_of_workers: int) -> bool:
+        """
+        Set workers count
+
+        Args:
+
+        number_of_workers: The number of workers.
+
+        Returns:
+            bool: True if successful.
+        """
+        results = await self.set_settings({'number_of_workers': number_of_workers})
+        return results
+
+    async def __aenter__(self) -> "Unmanic":
+        """Async enter."""
+        return self
+
+    async def __aexit__(self, *exc_info) -> None:
+        """Async exit."""
+        await self.close_session()
