@@ -1,9 +1,16 @@
 """Asynchronous Python client for Unmanic."""
-from typing import Dict
+from typing import Dict, List, Optional
 from aiohttp.client import ClientSession
 import json
 
 from .client import Client
+from .exceptions import UnmanicError
+
+from .models import (
+    Application,
+    Worker,
+    Settings,
+)
 
 class Unmanic(Client):
     """
@@ -28,6 +35,8 @@ class Unmanic(Client):
     user_agent: The user agent to use.
     """
 
+    _application: Optional[Application] = None
+
     def __init__(
         self,
         host: str = 'localhost',
@@ -51,6 +60,40 @@ class Unmanic(Client):
             user_agent=user_agent,
         )
 
+    @property
+    def app(self) -> Optional[Application]:
+        """Return the cached Application object."""
+        return self._application
+    
+    async def update(self, full_update: bool = False) -> Application:
+        """
+        Get all information about the application in a single call.
+
+        Returns:
+            Application: The application object.
+        """
+
+        workers = await self._request("workers/status")
+        if workers is None:
+            raise UnmanicError("Unmanic returned an empty API status response [workers/status]")
+
+        settings = await self._request("settings/read")
+        if settings is None:
+            raise UnmanicError("Unmanic returned an empty API status response [settings/read]")
+
+        if self._application is None or full_update:
+
+            version = await self._request("version/read")
+            if version is None:
+                raise UnmanicError("Unmanic returned an empty API version response [version/read]")
+
+            self._application = Application({"workers": workers, "settings": settings, "version": version.get('version')})
+        else:
+
+            self._application = Application.update_from_dict({"workers": workers, "settings": settings})
+
+        return self._application
+
     async def get_installation_name(self) -> str:
         """
         Get Unmanic installation name
@@ -59,7 +102,7 @@ class Unmanic(Client):
             str: Unmanic installation name
         """
         results = await self.get_settings()
-        return results['installation_name']
+        return results.installation_name
 
     async def get_version(self) -> str:
         """
@@ -133,7 +176,7 @@ class Unmanic(Client):
         results = await self._request("workers/worker/terminate", method='POST', data=json.dumps({"worker_id": worker_id}))
         return results['success']
 
-    async def get_workers_status(self) -> Dict:
+    async def get_workers_status(self) -> List[Worker]:
         """
         Get workers status
 
@@ -141,9 +184,9 @@ class Unmanic(Client):
             Dict: Workers status
         """
         results = await self._request("workers/status")
-        return results['workers_status']
+        return [Worker.from_dict(result) for result in results['workers_status']]
 
-    async def get_settings(self) -> Dict:
+    async def get_settings(self) -> Settings:
         """
         Get Unmanic settings
 
@@ -151,7 +194,7 @@ class Unmanic(Client):
             Dict: Unmanic server settings
         """
         results = await self._request("settings/read")
-        return results['settings']
+        return Settings.from_dict(results['settings'])
 
     async def set_settings(self, settings: Dict) -> bool:
         """
@@ -175,7 +218,7 @@ class Unmanic(Client):
             int: Number of workers
         """
         results = await self.get_settings()
-        return results['number_of_workers']
+        return results.number_of_workers
 
     async def set_workers_count(self, number_of_workers: int) -> bool:
         """
