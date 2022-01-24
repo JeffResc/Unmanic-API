@@ -41,10 +41,11 @@ from .models import (
     Settings,
 )
 
+
 class Unmanic(Client):
     &#34;&#34;&#34;
     Main class for Python API.
-    
+
     Args:
 
     host: The hostname or IP address of the Unmanic server.
@@ -93,7 +94,7 @@ class Unmanic(Client):
     def app(self) -&gt; Optional[Application]:
         &#34;&#34;&#34;Return the cached Application object.&#34;&#34;&#34;
         return self._application
-    
+
     async def update(self, full_update: bool = False) -&gt; Application:
         &#34;&#34;&#34;
         Get all information about the application in a single call.
@@ -104,29 +105,35 @@ class Unmanic(Client):
 
         workers = await self._request(&#34;workers/status&#34;)
         if workers is None:
-            raise UnmanicError(&#34;Unmanic returned an empty API status response [workers/status]&#34;)
+            raise UnmanicError(
+                &#34;Unmanic returned an empty API status response [workers/status]&#34;)
 
         settings = await self._request(&#34;settings/read&#34;)
         if settings is None:
-            raise UnmanicError(&#34;Unmanic returned an empty API status response [settings/read]&#34;)
+            raise UnmanicError(
+                &#34;Unmanic returned an empty API status response [settings/read]&#34;)
 
         if self._application is None or full_update:
 
             version = await self._request(&#34;version/read&#34;)
             if version is None:
-                raise UnmanicError(&#34;Unmanic returned an empty API version response [version/read]&#34;)
+                raise UnmanicError(
+                    &#34;Unmanic returned an empty API version response [version/read]&#34;)
 
-            self._application = Application({&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
+            self._application = Application(
+                {&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
+
         else:
 
-            self._application = Application.update_from_dict({&#34;workers&#34;: workers, &#34;settings&#34;: settings})
+            self._application = Application.update_from_dict(
+                {&#34;workers&#34;: workers, &#34;settings&#34;: settings})
 
         return self._application
 
     async def get_installation_name(self) -&gt; str:
         &#34;&#34;&#34;
         Get Unmanic installation name
-        
+
         Returns:
             str: Unmanic installation name
         &#34;&#34;&#34;
@@ -136,7 +143,7 @@ class Unmanic(Client):
     async def get_version(self) -&gt; str:
         &#34;&#34;&#34;
         Get Unmanic version
-        
+
         Returns:
             str: Unmanic server version
         &#34;&#34;&#34;
@@ -242,7 +249,7 @@ class Unmanic(Client):
     async def get_workers_count(self) -&gt; int:
         &#34;&#34;&#34;
         Get workers count
-        
+
         Returns:
             int: Number of workers
         &#34;&#34;&#34;
@@ -256,7 +263,7 @@ class Unmanic(Client):
         Args:
 
         number_of_workers: The number of workers.
-        
+
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
@@ -304,7 +311,7 @@ class Unmanic(Client):
 <pre><code class="python">class Unmanic(Client):
     &#34;&#34;&#34;
     Main class for Python API.
-    
+
     Args:
 
     host: The hostname or IP address of the Unmanic server.
@@ -353,7 +360,7 @@ class Unmanic(Client):
     def app(self) -&gt; Optional[Application]:
         &#34;&#34;&#34;Return the cached Application object.&#34;&#34;&#34;
         return self._application
-    
+
     async def update(self, full_update: bool = False) -&gt; Application:
         &#34;&#34;&#34;
         Get all information about the application in a single call.
@@ -364,29 +371,35 @@ class Unmanic(Client):
 
         workers = await self._request(&#34;workers/status&#34;)
         if workers is None:
-            raise UnmanicError(&#34;Unmanic returned an empty API status response [workers/status]&#34;)
+            raise UnmanicError(
+                &#34;Unmanic returned an empty API status response [workers/status]&#34;)
 
         settings = await self._request(&#34;settings/read&#34;)
         if settings is None:
-            raise UnmanicError(&#34;Unmanic returned an empty API status response [settings/read]&#34;)
+            raise UnmanicError(
+                &#34;Unmanic returned an empty API status response [settings/read]&#34;)
 
         if self._application is None or full_update:
 
             version = await self._request(&#34;version/read&#34;)
             if version is None:
-                raise UnmanicError(&#34;Unmanic returned an empty API version response [version/read]&#34;)
+                raise UnmanicError(
+                    &#34;Unmanic returned an empty API version response [version/read]&#34;)
 
-            self._application = Application({&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
+            self._application = Application(
+                {&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
+
         else:
 
-            self._application = Application.update_from_dict({&#34;workers&#34;: workers, &#34;settings&#34;: settings})
+            self._application = Application.update_from_dict(
+                {&#34;workers&#34;: workers, &#34;settings&#34;: settings})
 
         return self._application
 
     async def get_installation_name(self) -&gt; str:
         &#34;&#34;&#34;
         Get Unmanic installation name
-        
+
         Returns:
             str: Unmanic installation name
         &#34;&#34;&#34;
@@ -396,7 +409,7 @@ class Unmanic(Client):
     async def get_version(self) -&gt; str:
         &#34;&#34;&#34;
         Get Unmanic version
-        
+
         Returns:
             str: Unmanic server version
         &#34;&#34;&#34;
@@ -502,7 +515,7 @@ class Unmanic(Client):
     async def get_workers_count(self) -&gt; int:
         &#34;&#34;&#34;
         Get workers count
-        
+
         Returns:
             int: Number of workers
         &#34;&#34;&#34;
@@ -516,7 +529,7 @@ class Unmanic(Client):
         Args:
 
         number_of_workers: The number of workers.
-        
+
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
@@ -570,7 +583,7 @@ def app(self) -&gt; Optional[Application]:
 <pre><code class="python">async def get_installation_name(self) -&gt; str:
     &#34;&#34;&#34;
     Get Unmanic installation name
-    
+
     Returns:
         str: Unmanic installation name
     &#34;&#34;&#34;
@@ -620,7 +633,7 @@ def app(self) -&gt; Optional[Application]:
 <pre><code class="python">async def get_version(self) -&gt; str:
     &#34;&#34;&#34;
     Get Unmanic version
-    
+
     Returns:
         str: Unmanic server version
     &#34;&#34;&#34;
@@ -645,7 +658,7 @@ def app(self) -&gt; Optional[Application]:
 <pre><code class="python">async def get_workers_count(self) -&gt; int:
     &#34;&#34;&#34;
     Get workers count
-    
+
     Returns:
         int: Number of workers
     &#34;&#34;&#34;
@@ -844,7 +857,7 @@ def app(self) -&gt; Optional[Application]:
     Args:
 
     number_of_workers: The number of workers.
-    
+
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
@@ -907,22 +920,28 @@ def app(self) -&gt; Optional[Application]:
 
     workers = await self._request(&#34;workers/status&#34;)
     if workers is None:
-        raise UnmanicError(&#34;Unmanic returned an empty API status response [workers/status]&#34;)
+        raise UnmanicError(
+            &#34;Unmanic returned an empty API status response [workers/status]&#34;)
 
     settings = await self._request(&#34;settings/read&#34;)
     if settings is None:
-        raise UnmanicError(&#34;Unmanic returned an empty API status response [settings/read]&#34;)
+        raise UnmanicError(
+            &#34;Unmanic returned an empty API status response [settings/read]&#34;)
 
     if self._application is None or full_update:
 
         version = await self._request(&#34;version/read&#34;)
         if version is None:
-            raise UnmanicError(&#34;Unmanic returned an empty API version response [version/read]&#34;)
+            raise UnmanicError(
+                &#34;Unmanic returned an empty API version response [version/read]&#34;)
 
-        self._application = Application({&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
+        self._application = Application(
+            {&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
+
     else:
 
-        self._application = Application.update_from_dict({&#34;workers&#34;: workers, &#34;settings&#34;: settings})
+        self._application = Application.update_from_dict(
+            {&#34;workers&#34;: workers, &#34;settings&#34;: settings})
 
     return self._application</code></pre>
 </details>

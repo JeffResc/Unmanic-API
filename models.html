@@ -73,7 +73,8 @@ class Worker:
             name=data.get(&#34;name&#34;),
             idle=data.get(&#34;idle&#34;),
             pasued=data.get(&#34;paused&#34;),
-            start_time=datetime.datetime.fromtimestamp(int(float(data.get(&#34;start_time&#34;)))),
+            start_time=datetime.datetime.fromtimestamp(
+                int(float(data.get(&#34;start_time&#34;)))),
             current_file=data.get(&#34;current_file&#34;),
             current_task=data.get(&#34;current_task&#34;),
         )
@@ -215,7 +216,8 @@ class Application:
             self.settings = Settings.from_dict(data[&#34;settings&#34;])
 
         if &#34;workers&#34; in data and data[&#34;workers&#34;]:
-            workers = [Worker.from_dict(worker) for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
+            workers = [Worker.from_dict(worker)
+                       for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
             self.workers = workers
 
         if &#34;version&#34; in data and data[&#34;version&#34;]:
@@ -297,7 +299,8 @@ class Application:
             self.settings = Settings.from_dict(data[&#34;settings&#34;])
 
         if &#34;workers&#34; in data and data[&#34;workers&#34;]:
-            workers = [Worker.from_dict(worker) for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
+            workers = [Worker.from_dict(worker)
+                       for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
             self.workers = workers
 
         if &#34;version&#34; in data and data[&#34;version&#34;]:
@@ -351,7 +354,8 @@ class Application:
         self.settings = Settings.from_dict(data[&#34;settings&#34;])
 
     if &#34;workers&#34; in data and data[&#34;workers&#34;]:
-        workers = [Worker.from_dict(worker) for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
+        workers = [Worker.from_dict(worker)
+                   for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
         self.workers = workers
 
     if &#34;version&#34; in data and data[&#34;version&#34;]:
@@ -646,7 +650,8 @@ def from_dict(data: dict):
             name=data.get(&#34;name&#34;),
             idle=data.get(&#34;idle&#34;),
             pasued=data.get(&#34;paused&#34;),
-            start_time=datetime.datetime.fromtimestamp(int(float(data.get(&#34;start_time&#34;)))),
+            start_time=datetime.datetime.fromtimestamp(
+                int(float(data.get(&#34;start_time&#34;)))),
             current_file=data.get(&#34;current_file&#34;),
             current_task=data.get(&#34;current_task&#34;),
         )</code></pre>
@@ -700,7 +705,8 @@ def from_dict(data: dict):
         name=data.get(&#34;name&#34;),
         idle=data.get(&#34;idle&#34;),
         pasued=data.get(&#34;paused&#34;),
-        start_time=datetime.datetime.fromtimestamp(int(float(data.get(&#34;start_time&#34;)))),
+        start_time=datetime.datetime.fromtimestamp(
+            int(float(data.get(&#34;start_time&#34;)))),
         current_file=data.get(&#34;current_file&#34;),
         current_task=data.get(&#34;current_task&#34;),
     )</code></pre>
