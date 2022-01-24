@@ -44,7 +44,8 @@ class Worker:
             name=data.get("name"),
             idle=data.get("idle"),
             pasued=data.get("paused"),
-            start_time=datetime.datetime.fromtimestamp(int(float(data.get("start_time")))),
+            start_time=datetime.datetime.fromtimestamp(
+                int(float(data.get("start_time")))),
             current_file=data.get("current_file"),
             current_task=data.get("current_task"),
         )
@@ -186,7 +187,8 @@ class Application:
             self.settings = Settings.from_dict(data["settings"])
 
         if "workers" in data and data["workers"]:
-            workers = [Worker.from_dict(worker) for worker in data["workers"]["workers_status"]]
+            workers = [Worker.from_dict(worker)
+                       for worker in data["workers"]["workers_status"]]
             self.workers = workers
 
         if "version" in data and data["version"]:

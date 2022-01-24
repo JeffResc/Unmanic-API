@@ -17,6 +17,7 @@ from .exceptions import (
     UnmanicInternalServerError,
 )
 
+
 class Client:
     def __init__(
         self,
@@ -46,7 +47,6 @@ class Client:
 
         if self.base_path[-1] != "/":
             self.base_path += "/"
-
 
     async def _request(
         self,
@@ -110,10 +110,12 @@ class Client:
             )
 
         if response.status == 404:
-            raise UnmanicBadRequestRequestedEndpointNotFoundError("Bad request; Requested endpoint not found")
+            raise UnmanicBadRequestRequestedEndpointNotFoundError(
+                "Bad request; Requested endpoint not found")
 
         if response.status == 405:
-            raise UnmanicBadRequestRequestedMethodNotAllowedError("Bad request; Requested method not allowed")
+            raise UnmanicBadRequestRequestedMethodNotAllowedError(
+                "Bad request; Requested method not allowed")
 
         if response.status == 500:
             raise UnmanicInternalServerError("Internal server error")
@@ -126,7 +128,8 @@ class Client:
 
             if content_type == "application/json":
                 raise UnmanicError(
-                    f"HTTP {response.status}", json.loads(content.decode("utf8"))
+                    f"HTTP {response.status}", json.loads(
+                        content.decode("utf8"))
                 )
 
             raise UnmanicError(
