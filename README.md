@@ -8,49 +8,13 @@ Please note that not all features of the v2 API have been implemented, rather a 
 pip install unmanic-api
 ```
 
-## Example of All Methods
-```python
-from unmanic_api import Unmanic
-
-# Create an Unmanic API instance, provided an optional server host, server port (async defaults shown).
-um = Unmanic('localhost', 8888)
-
-# Prints the API version
-print(um.get_version())
-
-# Pause a worker, given its ID. Will return True if the operation is successful.
-um.pause_worker('W0')
-
-# Pause all workers. Will return True if the operation is successful.
-um.pause_all_workers()
-
-# Resume a worker, given its ID. Will return True if the operation is successful.
-um.resume_worker('W0')
-
-# Resume all workers. Will return True if the operation is successful.
-um.resume_all_workers()
-
-# Terminate a worker, given its ID. Will return True if the operation is successful.
-um.terminate_worker('W0')
-
-# Get status of all workers, will return an object.
-print(um.get_workers_status())
-
-# Get number of workers, will return an integer.
-workers_count = um.get_workers_count()
-
-# Set number of workers. Will return True if the operation is successful.
-um.set_workers_count(4)
+## Quick-Start Example
 ```
 
-## SSL Examples
-```python
-# Create an Unmanic API instance with SSL
-um = Unmanic('localhost', 8888, use_ssl=True)
-
-# Create an Unmanic API instance with SSL, ignoring SSL certificate
-um = Unmanic('localhost', 8888, use_ssl=True, ignore_ssl_cert=True)
 ```
+
+## Documentation
+[See The Documentation](https://jeffresc.dev/Unmanic-API/)
 
 ## See Also
 - [PyPi Project](https://pypi.org/project/unmanic-api/)
