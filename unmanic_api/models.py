@@ -1,4 +1,4 @@
-"""Models for Sonarr."""
+"""Models for Unmanic."""
 
 from dataclasses import dataclass
 import datetime
