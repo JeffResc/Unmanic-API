@@ -10,13 +10,21 @@ class Unmanic(Client):
     Main class for Python API.
     
     Args:
+
     host: The hostname or IP address of the Unmanic server.
+
     port: The port number of the Unmanic server.
+
     base_path: The base path of the API on the Unmanic server.
+
     request_timeout: The request timeout in seconds.
+
     session: The aiohttp.ClientSession to use.
+
     tls: Whether to use TLS.
+
     verify_ssl: Whether to verify the SSL certificate.
+
     user_agent: The user agent to use.
     """
 
@@ -66,8 +74,11 @@ class Unmanic(Client):
     async def pause_worker(self, worker_id: str) -> bool:
         """
         Pause a worker
+
         Args:
+
         worker_id: The worker id.
+
         Returns:
             bool: True if successful.
         """
@@ -77,6 +88,7 @@ class Unmanic(Client):
     async def pause_all_workers(self) -> bool:
         """
         Pause all workers
+
         Returns:
             bool: True if successful.
         """
@@ -86,8 +98,11 @@ class Unmanic(Client):
     async def resume_worker(self, worker_id: str) -> bool:
         """
         Resume a worker
+
         Args:
+
         worker_id: The worker id.
+
         Returns:
             bool: True if successful.
         """
@@ -97,6 +112,7 @@ class Unmanic(Client):
     async def resume_all_workers(self) -> bool:
         """
         Resume all workers
+
         Returns:
             bool: True if successful.
         """
@@ -106,8 +122,11 @@ class Unmanic(Client):
     async def terminate_worker(self, worker_id) -> bool:
         """
         Terminate a worker
+
         Args:
+
         worker_id: The worker id.
+
         Returns:
             bool: True if successful.
         """
@@ -117,6 +136,7 @@ class Unmanic(Client):
     async def get_workers_status(self) -> Dict:
         """
         Get workers status
+
         Returns:
             Dict: Workers status
         """
@@ -126,6 +146,7 @@ class Unmanic(Client):
     async def get_settings(self) -> Dict:
         """
         Get Unmanic settings
+
         Returns:
             Dict: Unmanic server settings
         """
@@ -135,8 +156,11 @@ class Unmanic(Client):
     async def set_settings(self, settings: Dict) -> bool:
         """
         Set Unmanic settings
+
         Args:
+
         settings: The settings to set.
+
         Returns:
             bool: True if successful.
         """
@@ -156,8 +180,11 @@ class Unmanic(Client):
     async def set_workers_count(self, number_of_workers: int) -> bool:
         """
         Set workers count
+
         Args:
+
         number_of_workers: The number of workers.
+        
         Returns:
             bool: True if successful.
         """
