@@ -4,7 +4,7 @@ from typing import List
 import pytest
 import unmanic_api.models as models
 from aiohttp import ClientSession
-from unmanic_api import Unmanic
+from unmanic_api import Unmanic, UnmanicError
 
 from . import load_fixture
 
@@ -157,6 +157,46 @@ async def test_get_version(aresponses):
 
         assert response
         assert response == "0.1.4~655b18b"
+
+@pytest.mark.asyncio
+async def test_get_version_empty_json(aresponses):
+    """Test get_version() method is handled correctly when given empty json."""
+    aresponses.add(
+        MATCH_HOST,
+        "/unmanic/api/v2/version/read",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text="{}",
+        ),
+        match_querystring=True,
+    )
+
+    async with ClientSession() as session:
+        unmanic = Unmanic(HOST, PORT, session=session)
+        with pytest.raises(UnmanicError):
+            assert await unmanic.get_version()
+
+@pytest.mark.asyncio
+async def test_get_version_empty_string(aresponses):
+    """Test get_version() method is handled correctly when given empty string."""
+    aresponses.add(
+        MATCH_HOST,
+        "/unmanic/api/v2/version/read",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text="",
+        ),
+        match_querystring=True,
+    )
+
+    async with ClientSession() as session:
+        unmanic = Unmanic(HOST, PORT, session=session)
+        with pytest.raises(UnmanicError):
+            assert await unmanic.get_version()
 
 @pytest.mark.asyncio
 async def test_get_worker_count(aresponses):
