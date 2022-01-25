@@ -23,7 +23,7 @@ class Client:
         self,
         host: str = 'localhost',
         port: int = 8888,
-        base_path: str = "/unmanic/api/v2/",
+        base_path: str = "/unmanic/api/",
         request_timeout: int = 8,
         session: aiohttp.client.ClientSession = None,
         tls: bool = False,
