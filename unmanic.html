@@ -36,7 +36,6 @@ from .client import Client
 from .exceptions import UnmanicError
 
 from .models import (
-    Application,
     Worker,
     Settings,
     PendingTask,
@@ -67,8 +66,6 @@ class Unmanic(Client):
     user_agent: The user agent to use.
     &#34;&#34;&#34;
 
-    _application: Optional[Application] = None
-
     def __init__(
         self,
         host: str = &#39;localhost&#39;,
@@ -91,46 +88,6 @@ class Unmanic(Client):
             verify_ssl=verify_ssl,
             user_agent=user_agent,
         )
-
-    @property
-    def app(self) -&gt; Optional[Application]:
-        &#34;&#34;&#34;Return the cached Application object.&#34;&#34;&#34;
-        return self._application
-
-    async def update(self, full_update: bool = False) -&gt; Application:
-        &#34;&#34;&#34;
-        Get all information about the application in a single call.
-
-        Returns:
-            Application: The application object.
-        &#34;&#34;&#34;
-
-        workers = await self._request(&#34;v2/workers/status&#34;)
-        if workers is None:
-            raise UnmanicError(
-                &#34;Unmanic returned an empty API status response [workers/status]&#34;)
-
-        settings = await self._request(&#34;v2/settings/read&#34;)
-        if settings is None:
-            raise UnmanicError(
-                &#34;Unmanic returned an empty API status response [settings/read]&#34;)
-
-        if self._application is None or full_update:
-
-            version = await self._request(&#34;v2/version/read&#34;)
-            if version is None:
-                raise UnmanicError(
-                    &#34;Unmanic returned an empty API version response [version/read]&#34;)
-
-            self._application = Application(
-                {&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
-
-        else:
-
-            self._application = Application.update_from_dict(
-                {&#34;workers&#34;: workers, &#34;settings&#34;: settings})
-
-        return self._application
 
     async def get_installation_name(self) -&gt; str:
         &#34;&#34;&#34;
@@ -353,8 +310,6 @@ class Unmanic(Client):
     user_agent: The user agent to use.
     &#34;&#34;&#34;
 
-    _application: Optional[Application] = None
-
     def __init__(
         self,
         host: str = &#39;localhost&#39;,
@@ -377,46 +332,6 @@ class Unmanic(Client):
             verify_ssl=verify_ssl,
             user_agent=user_agent,
         )
-
-    @property
-    def app(self) -&gt; Optional[Application]:
-        &#34;&#34;&#34;Return the cached Application object.&#34;&#34;&#34;
-        return self._application
-
-    async def update(self, full_update: bool = False) -&gt; Application:
-        &#34;&#34;&#34;
-        Get all information about the application in a single call.
-
-        Returns:
-            Application: The application object.
-        &#34;&#34;&#34;
-
-        workers = await self._request(&#34;v2/workers/status&#34;)
-        if workers is None:
-            raise UnmanicError(
-                &#34;Unmanic returned an empty API status response [workers/status]&#34;)
-
-        settings = await self._request(&#34;v2/settings/read&#34;)
-        if settings is None:
-            raise UnmanicError(
-                &#34;Unmanic returned an empty API status response [settings/read]&#34;)
-
-        if self._application is None or full_update:
-
-            version = await self._request(&#34;v2/version/read&#34;)
-            if version is None:
-                raise UnmanicError(
-                    &#34;Unmanic returned an empty API version response [version/read]&#34;)
-
-            self._application = Application(
-                {&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
-
-        else:
-
-            self._application = Application.update_from_dict(
-                {&#34;workers&#34;: workers, &#34;settings&#34;: settings})
-
-        return self._application
 
     async def get_installation_name(self) -&gt; str:
         &#34;&#34;&#34;
@@ -590,22 +505,6 @@ class Unmanic(Client):
 <ul class="hlist">
 <li><a title="unmanic_api.client.Client" href="client.html#unmanic_api.client.Client">Client</a></li>
 </ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="unmanic_api.unmanic.Unmanic.app"><code class="name">var <span class="ident">app</span> : Optional[<a title="unmanic_api.models.Application" href="models.html#unmanic_api.models.Application">Application</a>]</code></dt>
-<dd>
-<div class="desc"><p>Return the cached Application object.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def app(self) -&gt; Optional[Application]:
-    &#34;&#34;&#34;Return the cached Application object.&#34;&#34;&#34;
-    return self._application</code></pre>
-</details>
-</dd>
-</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="unmanic_api.unmanic.Unmanic.get_installation_name"><code class="name flex">
@@ -988,56 +887,6 @@ def app(self) -&gt; Optional[Application]:
     return results[&#39;success&#39;]</code></pre>
 </details>
 </dd>
-<dt id="unmanic_api.unmanic.Unmanic.update"><code class="name flex">
-<span>async def <span class="ident">update</span></span>(<span>self, full_update: bool = False) ‑> <a title="unmanic_api.models.Application" href="models.html#unmanic_api.models.Application">Application</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get all information about the application in a single call.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Application</code></dt>
-<dd>The application object.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">async def update(self, full_update: bool = False) -&gt; Application:
-    &#34;&#34;&#34;
-    Get all information about the application in a single call.
-
-    Returns:
-        Application: The application object.
-    &#34;&#34;&#34;
-
-    workers = await self._request(&#34;v2/workers/status&#34;)
-    if workers is None:
-        raise UnmanicError(
-            &#34;Unmanic returned an empty API status response [workers/status]&#34;)
-
-    settings = await self._request(&#34;v2/settings/read&#34;)
-    if settings is None:
-        raise UnmanicError(
-            &#34;Unmanic returned an empty API status response [settings/read]&#34;)
-
-    if self._application is None or full_update:
-
-        version = await self._request(&#34;v2/version/read&#34;)
-        if version is None:
-            raise UnmanicError(
-                &#34;Unmanic returned an empty API version response [version/read]&#34;)
-
-        self._application = Application(
-            {&#34;workers&#34;: workers, &#34;settings&#34;: settings, &#34;version&#34;: version.get(&#39;version&#39;)})
-
-    else:
-
-        self._application = Application.update_from_dict(
-            {&#34;workers&#34;: workers, &#34;settings&#34;: settings})
-
-    return self._application</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -1067,7 +916,6 @@ def app(self) -&gt; Optional[Application]:
 <li>
 <h4><code><a title="unmanic_api.unmanic.Unmanic" href="#unmanic_api.unmanic.Unmanic">Unmanic</a></code></h4>
 <ul class="">
-<li><code><a title="unmanic_api.unmanic.Unmanic.app" href="#unmanic_api.unmanic.Unmanic.app">app</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_installation_name" href="#unmanic_api.unmanic.Unmanic.get_installation_name">get_installation_name</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_pending_tasks" href="#unmanic_api.unmanic.Unmanic.get_pending_tasks">get_pending_tasks</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_settings" href="#unmanic_api.unmanic.Unmanic.get_settings">get_settings</a></code></li>
@@ -1082,7 +930,6 @@ def app(self) -&gt; Optional[Application]:
 <li><code><a title="unmanic_api.unmanic.Unmanic.set_workers_count" href="#unmanic_api.unmanic.Unmanic.set_workers_count">set_workers_count</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.terminate_worker" href="#unmanic_api.unmanic.Unmanic.terminate_worker">terminate_worker</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.trigger_library_scan" href="#unmanic_api.unmanic.Unmanic.trigger_library_scan">trigger_library_scan</a></code></li>
-<li><code><a title="unmanic_api.unmanic.Unmanic.update" href="#unmanic_api.unmanic.Unmanic.update">update</a></code></li>
 </ul>
 </li>
 </ul>

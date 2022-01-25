@@ -225,64 +225,7 @@ class Settings:
             installation_name=data.get(&#34;installation_name&#34;),
             distributed_worker_count_target=data.get(
                 &#34;distributed_worker_count_target&#34;),
-        )
-
-
-class Application:
-    &#34;&#34;&#34;
-    Object holding all information of the Unmanic Application.
-
-    Attributes:
-
-    workers: A list of Worker objects.
-
-    settings: A Settings object.
-
-    version: The Unmanic server version.
-    &#34;&#34;&#34;
-
-    settings: Settings
-    workers: List[Worker] = []
-    version: str
-
-    def __init__(self, data: dict):
-        &#34;&#34;&#34;
-        Initialize an empty Unmanic application class.
-
-        Args:
-
-        data: Unmanic API response.
-        &#34;&#34;&#34;
-        # Check if all elements are in the passed dict, else raise an Error
-        if any(k not in data for k in [&#34;settings&#34;, &#34;workers&#34;]):
-            raise UnmanicError(
-                &#34;Unmanic data is incomplete, cannot construct object&#34;)
-        self.update_from_dict(data)
-
-    def update_from_dict(self, data: dict) -&gt; &#34;Application&#34;:
-        &#34;&#34;&#34;
-        Return Application object from Unmanic API response.
-
-        Args:
-
-        data: Unmanic API response.
-
-        Returns:
-
-        Application: Application object.
-        &#34;&#34;&#34;
-        if &#34;settings&#34; in data and data[&#34;settings&#34;]:
-            self.settings = Settings.from_dict(data[&#34;settings&#34;])
-
-        if &#34;workers&#34; in data and data[&#34;workers&#34;]:
-            workers = [Worker.from_dict(worker)
-                       for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
-            self.workers = workers
-
-        if &#34;version&#34; in data and data[&#34;version&#34;]:
-            self.version = data[&#34;version&#34;]
-
-        return self</code></pre>
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -294,137 +237,6 @@ class Application:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="unmanic_api.models.Application"><code class="flex name class">
-<span>class <span class="ident">Application</span></span>
-<span>(</span><span>data: dict)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Object holding all information of the Unmanic Application.</p>
-<p>Attributes:</p>
-<p>workers: A list of Worker objects.</p>
-<p>settings: A Settings object.</p>
-<p>version: The Unmanic server version.</p>
-<p>Initialize an empty Unmanic application class.</p>
-<p>Args:</p>
-<p>data: Unmanic API response.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Application:
-    &#34;&#34;&#34;
-    Object holding all information of the Unmanic Application.
-
-    Attributes:
-
-    workers: A list of Worker objects.
-
-    settings: A Settings object.
-
-    version: The Unmanic server version.
-    &#34;&#34;&#34;
-
-    settings: Settings
-    workers: List[Worker] = []
-    version: str
-
-    def __init__(self, data: dict):
-        &#34;&#34;&#34;
-        Initialize an empty Unmanic application class.
-
-        Args:
-
-        data: Unmanic API response.
-        &#34;&#34;&#34;
-        # Check if all elements are in the passed dict, else raise an Error
-        if any(k not in data for k in [&#34;settings&#34;, &#34;workers&#34;]):
-            raise UnmanicError(
-                &#34;Unmanic data is incomplete, cannot construct object&#34;)
-        self.update_from_dict(data)
-
-    def update_from_dict(self, data: dict) -&gt; &#34;Application&#34;:
-        &#34;&#34;&#34;
-        Return Application object from Unmanic API response.
-
-        Args:
-
-        data: Unmanic API response.
-
-        Returns:
-
-        Application: Application object.
-        &#34;&#34;&#34;
-        if &#34;settings&#34; in data and data[&#34;settings&#34;]:
-            self.settings = Settings.from_dict(data[&#34;settings&#34;])
-
-        if &#34;workers&#34; in data and data[&#34;workers&#34;]:
-            workers = [Worker.from_dict(worker)
-                       for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
-            self.workers = workers
-
-        if &#34;version&#34; in data and data[&#34;version&#34;]:
-            self.version = data[&#34;version&#34;]
-
-        return self</code></pre>
-</details>
-<h3>Class variables</h3>
-<dl>
-<dt id="unmanic_api.models.Application.settings"><code class="name">var <span class="ident">settings</span> : <a title="unmanic_api.models.Settings" href="#unmanic_api.models.Settings">Settings</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="unmanic_api.models.Application.version"><code class="name">var <span class="ident">version</span> : str</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="unmanic_api.models.Application.workers"><code class="name">var <span class="ident">workers</span> : List[<a title="unmanic_api.models.Worker" href="#unmanic_api.models.Worker">Worker</a>]</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-<h3>Methods</h3>
-<dl>
-<dt id="unmanic_api.models.Application.update_from_dict"><code class="name flex">
-<span>def <span class="ident">update_from_dict</span></span>(<span>self, data: dict) ‑> <a title="unmanic_api.models.Application" href="#unmanic_api.models.Application">Application</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Return Application object from Unmanic API response.</p>
-<p>Args:</p>
-<p>data: Unmanic API response.</p>
-<p>Returns:</p>
-<p>Application: Application object.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update_from_dict(self, data: dict) -&gt; &#34;Application&#34;:
-    &#34;&#34;&#34;
-    Return Application object from Unmanic API response.
-
-    Args:
-
-    data: Unmanic API response.
-
-    Returns:
-
-    Application: Application object.
-    &#34;&#34;&#34;
-    if &#34;settings&#34; in data and data[&#34;settings&#34;]:
-        self.settings = Settings.from_dict(data[&#34;settings&#34;])
-
-    if &#34;workers&#34; in data and data[&#34;workers&#34;]:
-        workers = [Worker.from_dict(worker)
-                   for worker in data[&#34;workers&#34;][&#34;workers_status&#34;]]
-        self.workers = workers
-
-    if &#34;version&#34; in data and data[&#34;version&#34;]:
-        self.version = data[&#34;version&#34;]
-
-    return self</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 <dt id="unmanic_api.models.PendingTask"><code class="flex name class">
 <span>class <span class="ident">PendingTask</span></span>
 <span>(</span><span>id: int, abspath: str, priority: int, type: str, status: str)</span>
@@ -961,15 +773,6 @@ def from_dict(data: dict):
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="unmanic_api.models.Application" href="#unmanic_api.models.Application">Application</a></code></h4>
-<ul class="">
-<li><code><a title="unmanic_api.models.Application.settings" href="#unmanic_api.models.Application.settings">settings</a></code></li>
-<li><code><a title="unmanic_api.models.Application.update_from_dict" href="#unmanic_api.models.Application.update_from_dict">update_from_dict</a></code></li>
-<li><code><a title="unmanic_api.models.Application.version" href="#unmanic_api.models.Application.version">version</a></code></li>
-<li><code><a title="unmanic_api.models.Application.workers" href="#unmanic_api.models.Application.workers">workers</a></code></li>
-</ul>
-</li>
 <li>
 <h4><code><a title="unmanic_api.models.PendingTask" href="#unmanic_api.models.PendingTask">PendingTask</a></code></h4>
 <ul class="two-column">
