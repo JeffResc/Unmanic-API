@@ -1,5 +1,5 @@
 """Asynchronous Python client for Unmanic."""
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Type
 from aiohttp.client import ClientSession
 import json
 
@@ -90,10 +90,8 @@ class Unmanic(Client):
             return results['version']
         except KeyError:
             raise UnmanicError("Unable to get Unmanic version, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to pause all workers: {e}")
-        except:
-            raise UnmanicError("Unable to get Unmanic version")
+        except TypeError:
+            raise UnmanicError("Unable to get Unmanic version, type error, no results")
 
     async def pause_worker(self, worker_id: str) -> bool:
         """
@@ -106,15 +104,13 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
+        results = await self._request(f"v2/workers/worker/pause", method='POST', data=json.dumps({"worker_id": worker_id}))
         try:
-            results = await self._request(f"v2/workers/worker/pause", method='POST', data=json.dumps({"worker_id": worker_id}))
             return results['success']
         except KeyError:
             raise UnmanicError("Unable to pause worker, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to pause worker: {e}")
-        except:
-            raise UnmanicError("Unable to pause worker")
+        except TypeError:
+            raise UnmanicError("Unable to pause worker, type error, no results")
 
     async def pause_all_workers(self) -> bool:
         """
@@ -123,15 +119,13 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
+        results = await self._request("v2/workers/worker/pause/all", method='POST')
         try:
-            results = await self._request("v2/workers/worker/pause/all", method='POST')
             return results['success']
         except KeyError:
             raise UnmanicError("Unable to pause all workers, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to pause all workers: {e}")
-        except:
-            raise UnmanicError("Unable to pause all workers")
+        except TypeError:
+            raise UnmanicError("Unable to pause all workers, type error, no results")
 
     async def resume_worker(self, worker_id: str) -> bool:
         """
@@ -144,15 +138,13 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
+        results = await self._request(f"v2/workers/worker/resume", method='POST', data=json.dumps({"worker_id": worker_id}))
         try:
-            results = await self._request(f"v2/workers/worker/resume", method='POST', data=json.dumps({"worker_id": worker_id}))
             return results['success']
         except KeyError:
             raise UnmanicError("Unable to resume worker, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to resume worker: {e}")
-        except:
-            raise UnmanicError("Unable to resume worker")
+        except TypeError:
+            raise UnmanicError("Unable to resume worker, type error, no results")
 
     async def resume_all_workers(self) -> bool:
         """
@@ -161,15 +153,13 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
+        results = await self._request("v2/workers/worker/resume/all", method='POST')
         try:
-            results = await self._request("v2/workers/worker/resume/all", method='POST')
             return results['success']
         except KeyError:
             raise UnmanicError("Unable to resume all workers, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to resume all workers: {e}")
-        except:
-            raise UnmanicError("Unable to resume all workers")
+        except TypeError:
+            raise UnmanicError("Unable to resume all workers, type error, no results")
 
     async def terminate_worker(self, worker_id) -> bool:
         """
@@ -182,15 +172,13 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
+        results = await self._request("v2/workers/worker/terminate", method='POST', data=json.dumps({"worker_id": worker_id}))
         try:
-            results = await self._request("v2/workers/worker/terminate", method='POST', data=json.dumps({"worker_id": worker_id}))
             return results['success']
         except KeyError:
             raise UnmanicError("Unable to terminate worker, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to terminate worker: {e}")
-        except:
-            raise UnmanicError("Unable to terminate worker")
+        except TypeError:
+            raise UnmanicError("Unable to terminate worker, type error, no results")
 
     async def get_workers_status(self) -> List[Worker]:
         """
@@ -199,13 +187,13 @@ class Unmanic(Client):
         Returns:
             Dict: Workers status
         """
+        results = await self._request("v2/workers/status")
         try:
-            results = await self._request("v2/workers/status")
             return [Worker.from_dict(result) for result in results['workers_status']]
         except KeyError:
             raise UnmanicError("Unable to get workers status, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to get workers status: {e}")
+        except TypeError:
+            raise UnmanicError("Unable to get workers status, type error, no results")
 
     async def get_settings(self) -> Settings:
         """
@@ -214,15 +202,13 @@ class Unmanic(Client):
         Returns:
             Dict: Unmanic server settings
         """
+        results = await self._request("v2/settings/read")
         try:
-            results = await self._request("v2/settings/read")
             return Settings.from_dict(results['settings'])
         except KeyError:
             raise UnmanicError("Unable to get Unmanic settings, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to get Unmanic settings: {e}")
-        except:
-            raise UnmanicError("Unable to get Unmanic settings")
+        except TypeError:
+            raise UnmanicError("Unable to get Unmanic settings, type error, no results")
 
     async def set_settings(self, settings: Dict) -> bool:
         """
@@ -235,15 +221,13 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
+        results = await self._request("v2/settings/write", method='POST', data=json.dumps({'settings': settings}))
         try:
-            results = await self._request("v2/settings/write", method='POST', data=json.dumps({'settings': settings}))
             return results['success']
         except KeyError:
             raise UnmanicError("Unable to set Unmanic settings, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to set Unmanic settings: {e}")
-        except:
-            raise UnmanicError("Unable to set Unmanic settings")
+        except TypeError:
+            raise UnmanicError("Unable to set Unmanic settings, type error, no results")
 
     async def get_workers_count(self) -> int:
         """
@@ -255,12 +239,10 @@ class Unmanic(Client):
         try:
             results = await self.get_settings()
             return results.number_of_workers
-        except KeyError:
-            raise UnmanicError("Unable to get workers count, key not found")
         except UnmanicError as e:
-            raise UnmanicError(f"Unable to get workers count: {e}")
+            raise UnmanicError(f"Unable to get worker count: {e}")
         except:
-            raise UnmanicError("Unable to get workers count")
+            raise UnmanicError("Unable to get worker count")
 
     async def set_workers_count(self, number_of_workers: int) -> bool:
         """
@@ -274,14 +256,11 @@ class Unmanic(Client):
             bool: True if successful.
         """
         try:
-            results = await self.set_settings({'number_of_workers': number_of_workers})
-            return results
-        except KeyError:
-            raise UnmanicError("Unable to set workers count, key not found")
+            return await self.set_settings({'number_of_workers': number_of_workers})
         except UnmanicError as e:
-            raise UnmanicError(f"Unable to set workers count: {e}")
+            raise UnmanicError(f"Unable to set worker count: {e}")
         except:
-            raise UnmanicError("Unable to set workers count")
+            raise UnmanicError("Unable to set worker count")
 
     async def trigger_library_scan(self) -> bool:
         """
@@ -290,15 +269,13 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
+        results = await self._request("v1/pending/rescan", method='GET')
         try:
-            results = await self._request("v1/pending/rescan", method='GET')
             return results['success']
         except KeyError:
             raise UnmanicError("Unable to trigger library scan, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to trigger library scan: {e}")
-        except:
-            raise UnmanicError("Unable to trigger library scan")
+        except TypeError:
+            raise UnmanicError("Unable to trigger library scan, type error, no results")
 
     async def get_pending_tasks(self, start=0, length=10, search_value="", order_by="priority", order_direction="desc") -> List[PendingTask]:
         """
@@ -307,15 +284,13 @@ class Unmanic(Client):
         Returns:
             Dict: TaskQueue
         """
+        results = await self._request("v2/pending/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
         try:
-            results = await self._request("v2/pending/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
             return TaskQueue.from_dict(results)
         except KeyError:
             raise UnmanicError("Unable to get pending tasks, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to get pending tasks: {e}")
-        except:
-            raise UnmanicError("Unable to get pending tasks")
+        except TypeError:
+            raise UnmanicError("Unable to get pending tasks, type error, no results")
 
     async def get_task_history(self, start=0, length=10, search_value="", order_by="finish_time", order_direction="desc") -> List[CompletedTask]:
         """
@@ -324,15 +299,13 @@ class Unmanic(Client):
         Returns:
             Dict: TaskHistory
         """
+        results = await self._request("v2/history/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
         try:
-            results = await self._request("v2/history/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
             return TaskHistory.from_dict(results)
         except KeyError:
             raise UnmanicError("Unable to get task history, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to get task history: {e}")
-        except:
-            raise UnmanicError("Unable to get task history")
+        except TypeError:
+            raise UnmanicError("Unable to get task history, type error, no results")
 
     async def get_system_configuration(self) -> SystemConfiguration:
         """
@@ -341,15 +314,13 @@ class Unmanic(Client):
         Returns:
             Dict: SystemConfiguration
         """
+        results = await self._request("v2/settings/configuration")
         try:
-            results = await self._request("v2/settings/configuration")
             return SystemConfiguration.from_dict(results["configuration"])
         except KeyError:
             raise UnmanicError("Unable to get system configuration, key not found")
-        except UnmanicError as e:
-            raise UnmanicError(f"Unable to get system configuration: {e}")
-        except:
-            raise UnmanicError("Unable to get system configuration")
+        except TypeError:
+            raise UnmanicError("Unable to get system configuration, type error, no results")
 
     async def __aenter__(self) -> "Unmanic":
         """Async enter."""
