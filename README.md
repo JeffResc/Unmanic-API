@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/JeffResc/Unmanic-API/branch/main/graph/badge.svg?token=4JJLW3BFUP)](https://codecov.io/gh/JeffResc/Unmanic-API)
+![GitHub](https://img.shields.io/github/license/JeffResc/Unmanic-API)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/unmanic_api)
 # Unmanic-API
 Asynchronous Python client for Unmanic.
 
