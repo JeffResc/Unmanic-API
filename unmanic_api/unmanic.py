@@ -11,6 +11,8 @@ from .models import (
     Settings,
     PendingTask,
     TaskQueue,
+    CompletedTask,
+    TaskHistory,
 )
 
 
@@ -219,6 +221,16 @@ class Unmanic(Client):
         """
         results = await self._request("v2/pending/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
         return TaskQueue.from_dict(results)
+
+    async def get_task_history(self, start=0, length=10, search_value="", order_by="finish_time", order_direction="desc") -> List[CompletedTask]:
+        """
+        Get task history
+
+        Returns:
+            Dict: TaskHistory
+        """
+        results = await self._request("v2/history/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
+        return TaskHistory.from_dict(results)
 
     async def __aenter__(self) -> "Unmanic":
         """Async enter."""

@@ -61,7 +61,7 @@ class TaskQueue:
 
     recordsFiltered: The number of records after filtering.
 
-    results: The list of tasks.
+    results: The list of PendingTasks.
     """
 
     recordsTotal: int
@@ -108,6 +108,63 @@ class PendingTask:
             priority=data.get("priority"),
             type=data.get("type"),
             status=data.get("status"),
+        )
+
+@dataclass(frozen=True)
+class TaskHistory:
+    """
+    Object holding task queue information from Unmanic.
+
+    Attributes:
+
+    recordsTotal: The total number of records.
+
+    recordsFiltered: The number of records after filtering.
+
+    results: The list of CompletedTasks.
+    """
+
+    recordsTotal: int
+    recordsFiltered: int
+    results: List
+
+    @staticmethod
+    def from_dict(data: dict):
+        return TaskHistory(
+            recordsTotal=data.get("recordsTotal"),
+            recordsFiltered=data.get("recordsFiltered"),
+            results=[CompletedTask.from_dict(completed_task) for completed_task in data.get("results")],
+        )
+
+@dataclass(frozen=True)
+class CompletedTask:
+    """
+    Object holding completed task information from Unmanic.
+
+    Attributes:
+
+    id: The task id.
+
+    task_label: The task label.
+
+    task_success: Whether the task was successful.
+
+    finish_time: The finish time of the task.
+    """
+
+    id: int
+    task_label: str
+    task_success: bool
+    finish_time: datetime
+
+    @staticmethod
+    def from_dict(data: dict):
+        return CompletedTask(
+            id=data.get("id"),
+            task_label=data.get("task_label"),
+            task_success=data.get("task_success"),
+            finish_time=datetime.datetime.fromtimestamp(
+                int(float(data.get("finish_time")))),
         )
 
 @dataclass(frozen=True)

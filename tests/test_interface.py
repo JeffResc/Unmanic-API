@@ -68,6 +68,31 @@ async def test_get_pending_tasks(aresponses):
         assert isinstance(response.results[0], models.PendingTask)
 
 @pytest.mark.asyncio
+async def test_get_task_history(aresponses):
+    """Test get_task_history() method is handled correctly."""
+    aresponses.add(
+        MATCH_HOST,
+        "/unmanic/api/v2/history/tasks",
+        "POST",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixture("history.json"),
+        ),
+        match_querystring=True,
+    )
+
+    async with ClientSession() as session:
+        unmanic = Unmanic(HOST, PORT, session=session)
+        response = await unmanic.get_task_history()
+
+        assert response
+        assert isinstance(response, models.TaskHistory)
+
+        assert response.results[0]
+        assert isinstance(response.results[0], models.CompletedTask)
+
+@pytest.mark.asyncio
 async def test_get_settings(aresponses):
     """Test get_settings() method is handled correctly."""
     aresponses.add(
