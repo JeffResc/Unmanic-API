@@ -99,11 +99,14 @@ class TaskQueue:
 
     @staticmethod
     def from_dict(data: dict):
-        return TaskQueue(
-            recordsTotal=data.get(&#34;recordsTotal&#34;),
-            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
-            results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
-        )
+        try:
+            return TaskQueue(
+                recordsTotal=data.get(&#34;recordsTotal&#34;),
+                recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+                results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
+            )
+        except AttributeError:
+            raise UnmanicError(&#34;Unable to parse task queue data.&#34;)
 
 @dataclass(frozen=True)
 class PendingTask:
@@ -159,11 +162,14 @@ class TaskHistory:
 
     @staticmethod
     def from_dict(data: dict):
-        return TaskHistory(
-            recordsTotal=data.get(&#34;recordsTotal&#34;),
-            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
-            results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
-        )
+        try:
+            return TaskHistory(
+                recordsTotal=data.get(&#34;recordsTotal&#34;),
+                recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+                results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
+            )
+        except AttributeError:
+            raise UnmanicError(&#34;Unable to parse task history.&#34;)
 
 @dataclass(frozen=True)
 class CompletedTask:
@@ -1039,11 +1045,14 @@ def from_dict(data: dict):
 
     @staticmethod
     def from_dict(data: dict):
-        return TaskHistory(
-            recordsTotal=data.get(&#34;recordsTotal&#34;),
-            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
-            results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
-        )</code></pre>
+        try:
+            return TaskHistory(
+                recordsTotal=data.get(&#34;recordsTotal&#34;),
+                recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+                results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
+            )
+        except AttributeError:
+            raise UnmanicError(&#34;Unable to parse task history.&#34;)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -1073,11 +1082,14 @@ def from_dict(data: dict):
 </summary>
 <pre><code class="python">@staticmethod
 def from_dict(data: dict):
-    return TaskHistory(
-        recordsTotal=data.get(&#34;recordsTotal&#34;),
-        recordsFiltered=data.get(&#34;recordsFiltered&#34;),
-        results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
-    )</code></pre>
+    try:
+        return TaskHistory(
+            recordsTotal=data.get(&#34;recordsTotal&#34;),
+            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+            results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
+        )
+    except AttributeError:
+        raise UnmanicError(&#34;Unable to parse task history.&#34;)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1115,11 +1127,14 @@ def from_dict(data: dict):
 
     @staticmethod
     def from_dict(data: dict):
-        return TaskQueue(
-            recordsTotal=data.get(&#34;recordsTotal&#34;),
-            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
-            results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
-        )</code></pre>
+        try:
+            return TaskQueue(
+                recordsTotal=data.get(&#34;recordsTotal&#34;),
+                recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+                results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
+            )
+        except AttributeError:
+            raise UnmanicError(&#34;Unable to parse task queue data.&#34;)</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -1149,11 +1164,14 @@ def from_dict(data: dict):
 </summary>
 <pre><code class="python">@staticmethod
 def from_dict(data: dict):
-    return TaskQueue(
-        recordsTotal=data.get(&#34;recordsTotal&#34;),
-        recordsFiltered=data.get(&#34;recordsFiltered&#34;),
-        results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
-    )</code></pre>
+    try:
+        return TaskQueue(
+            recordsTotal=data.get(&#34;recordsTotal&#34;),
+            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+            results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
+        )
+    except AttributeError:
+        raise UnmanicError(&#34;Unable to parse task queue data.&#34;)</code></pre>
 </details>
 </dd>
 </dl>

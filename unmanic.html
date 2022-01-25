@@ -316,8 +316,6 @@ class Unmanic(Client):
         results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
         try:
             return TaskQueue.from_dict(results)
-        except KeyError:
-            raise UnmanicError(&#34;Unable to get pending tasks, key not found&#34;)
         except TypeError:
             raise UnmanicError(&#34;Unable to get pending tasks, type error, no results&#34;)
 
@@ -331,8 +329,6 @@ class Unmanic(Client):
         results = await self._request(&#34;v2/history/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
         try:
             return TaskHistory.from_dict(results)
-        except KeyError:
-            raise UnmanicError(&#34;Unable to get task history, key not found&#34;)
         except TypeError:
             raise UnmanicError(&#34;Unable to get task history, type error, no results&#34;)
 
@@ -659,8 +655,6 @@ class Unmanic(Client):
         results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
         try:
             return TaskQueue.from_dict(results)
-        except KeyError:
-            raise UnmanicError(&#34;Unable to get pending tasks, key not found&#34;)
         except TypeError:
             raise UnmanicError(&#34;Unable to get pending tasks, type error, no results&#34;)
 
@@ -674,8 +668,6 @@ class Unmanic(Client):
         results = await self._request(&#34;v2/history/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
         try:
             return TaskHistory.from_dict(results)
-        except KeyError:
-            raise UnmanicError(&#34;Unable to get task history, key not found&#34;)
         except TypeError:
             raise UnmanicError(&#34;Unable to get task history, type error, no results&#34;)
 
@@ -762,8 +754,6 @@ class Unmanic(Client):
     results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
     try:
         return TaskQueue.from_dict(results)
-    except KeyError:
-        raise UnmanicError(&#34;Unable to get pending tasks, key not found&#34;)
     except TypeError:
         raise UnmanicError(&#34;Unable to get pending tasks, type error, no results&#34;)</code></pre>
 </details>
@@ -852,8 +842,6 @@ class Unmanic(Client):
     results = await self._request(&#34;v2/history/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
     try:
         return TaskHistory.from_dict(results)
-    except KeyError:
-        raise UnmanicError(&#34;Unable to get task history, key not found&#34;)
     except TypeError:
         raise UnmanicError(&#34;Unable to get task history, type error, no results&#34;)</code></pre>
 </details>
