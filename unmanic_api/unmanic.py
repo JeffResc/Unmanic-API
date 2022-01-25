@@ -287,8 +287,6 @@ class Unmanic(Client):
         results = await self._request("v2/pending/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
         try:
             return TaskQueue.from_dict(results)
-        except KeyError:
-            raise UnmanicError("Unable to get pending tasks, key not found")
         except TypeError:
             raise UnmanicError("Unable to get pending tasks, type error, no results")
 
@@ -302,8 +300,6 @@ class Unmanic(Client):
         results = await self._request("v2/history/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
         try:
             return TaskHistory.from_dict(results)
-        except KeyError:
-            raise UnmanicError("Unable to get task history, key not found")
         except TypeError:
             raise UnmanicError("Unable to get task history, type error, no results")
 
