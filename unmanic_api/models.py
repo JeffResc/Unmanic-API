@@ -131,19 +131,19 @@ class Settings:
 
     library_path: The path to the Unmanic library directory.
 
-    enabled_library_scanner: Whether the library scanner is enabled.
+    enabled_library_scanner: Enable periodic library scans.
 
     schedule_full_scan_minutes: The number of minutes between full library scans.
 
-    follow_symlinks: Whether symlinks are followed when scanning.
+    follow_symlinks: Follow symlinks on library scans.
 
     concurrent_file_testers: The number of file testers to run concurrently.
 
-    run_full_scan_on_start: Whether a full library scan is run on startup.
+    run_full_scan_on_start: Run a one off library scan on startup.
 
-    enable_inotify: Whether inotify is enabled.
+    enable_inotify: Enable the library file monitor.
 
-    clear_pending_tasks_on_restart: Whether pending tasks are cleared on restart.
+    clear_pending_tasks_on_restart: Clear all pending tasks on startup.
 
     number_of_workers: The number of workers to run.
 
