@@ -39,6 +39,8 @@ from .models import (
     Application,
     Worker,
     Settings,
+    PendingTask,
+    TaskQueue,
 )
 
 
@@ -71,7 +73,7 @@ class Unmanic(Client):
         self,
         host: str = &#39;localhost&#39;,
         port: int = 8888,
-        base_path: str = &#34;/unmanic/api/v2/&#34;,
+        base_path: str = &#34;/unmanic/api/&#34;,
         request_timeout: int = 8,
         session: ClientSession = None,
         tls: bool = False,
@@ -103,19 +105,19 @@ class Unmanic(Client):
             Application: The application object.
         &#34;&#34;&#34;
 
-        workers = await self._request(&#34;workers/status&#34;)
+        workers = await self._request(&#34;v2/workers/status&#34;)
         if workers is None:
             raise UnmanicError(
                 &#34;Unmanic returned an empty API status response [workers/status]&#34;)
 
-        settings = await self._request(&#34;settings/read&#34;)
+        settings = await self._request(&#34;v2/settings/read&#34;)
         if settings is None:
             raise UnmanicError(
                 &#34;Unmanic returned an empty API status response [settings/read]&#34;)
 
         if self._application is None or full_update:
 
-            version = await self._request(&#34;version/read&#34;)
+            version = await self._request(&#34;v2/version/read&#34;)
             if version is None:
                 raise UnmanicError(
                     &#34;Unmanic returned an empty API version response [version/read]&#34;)
@@ -147,7 +149,7 @@ class Unmanic(Client):
         Returns:
             str: Unmanic server version
         &#34;&#34;&#34;
-        results = await self._request(&#34;version/read&#34;)
+        results = await self._request(&#34;v2/version/read&#34;)
         return results[&#39;version&#39;]
 
     async def pause_worker(self, worker_id: str) -&gt; bool:
@@ -161,7 +163,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(f&#34;v2/workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
         return results[&#39;success&#39;]
 
     async def pause_all_workers(self) -&gt; bool:
@@ -171,7 +173,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/worker/pause/all&#34;, method=&#39;POST&#39;)
+        results = await self._request(&#34;v2/workers/worker/pause/all&#34;, method=&#39;POST&#39;)
         return results[&#39;success&#39;]
 
     async def resume_worker(self, worker_id: str) -&gt; bool:
@@ -185,7 +187,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(f&#34;v2/workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
         return results[&#39;success&#39;]
 
     async def resume_all_workers(self) -&gt; bool:
@@ -195,7 +197,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/worker/resume/all&#34;, method=&#39;POST&#39;)
+        results = await self._request(&#34;v2/workers/worker/resume/all&#34;, method=&#39;POST&#39;)
         return results[&#39;success&#39;]
 
     async def terminate_worker(self, worker_id) -&gt; bool:
@@ -209,7 +211,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/worker/terminate&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(&#34;v2/workers/worker/terminate&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
         return results[&#39;success&#39;]
 
     async def get_workers_status(self) -&gt; List[Worker]:
@@ -219,7 +221,7 @@ class Unmanic(Client):
         Returns:
             Dict: Workers status
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/status&#34;)
+        results = await self._request(&#34;v2/workers/status&#34;)
         return [Worker.from_dict(result) for result in results[&#39;workers_status&#39;]]
 
     async def get_settings(self) -&gt; Settings:
@@ -229,7 +231,7 @@ class Unmanic(Client):
         Returns:
             Dict: Unmanic server settings
         &#34;&#34;&#34;
-        results = await self._request(&#34;settings/read&#34;)
+        results = await self._request(&#34;v2/settings/read&#34;)
         return Settings.from_dict(results[&#39;settings&#39;])
 
     async def set_settings(self, settings: Dict) -&gt; bool:
@@ -243,7 +245,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;settings/write&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;settings&#39;: settings}))
+        results = await self._request(&#34;v2/settings/write&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;settings&#39;: settings}))
         return results[&#39;success&#39;]
 
     async def get_workers_count(self) -&gt; int:
@@ -270,6 +272,26 @@ class Unmanic(Client):
         results = await self.set_settings({&#39;number_of_workers&#39;: number_of_workers})
         return results
 
+    async def trigger_library_scan(self) -&gt; bool:
+        &#34;&#34;&#34;
+        Trigger library scan
+
+        Returns:
+            bool: True if successful.
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v1/pending/rescan&#34;, method=&#39;GET&#39;)
+        return results[&#39;success&#39;]
+
+    async def get_pending_tasks(self, start=0, length=10, search_value=&#34;&#34;, order_by=&#34;priority&#34;, order_direction=&#34;desc&#34;) -&gt; List[PendingTask]:
+        &#34;&#34;&#34;
+        Get pending tasks
+
+        Returns:
+            Dict: TaskQueue
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
+        return TaskQueue.from_dict(results)
+
     async def __aenter__(self) -&gt; &#34;Unmanic&#34;:
         &#34;&#34;&#34;Async enter.&#34;&#34;&#34;
         return self
@@ -290,7 +312,7 @@ class Unmanic(Client):
 <dl>
 <dt id="unmanic_api.unmanic.Unmanic"><code class="flex name class">
 <span>class <span class="ident">Unmanic</span></span>
-<span>(</span><span>host: str = 'localhost', port: int = 8888, base_path: str = '/unmanic/api/v2/', request_timeout: int = 8, session: aiohttp.client.ClientSession = None, tls: bool = False, verify_ssl: bool = True, user_agent: str = None)</span>
+<span>(</span><span>host: str = 'localhost', port: int = 8888, base_path: str = '/unmanic/api/', request_timeout: int = 8, session: aiohttp.client.ClientSession = None, tls: bool = False, verify_ssl: bool = True, user_agent: str = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Main class for Python API.</p>
@@ -337,7 +359,7 @@ class Unmanic(Client):
         self,
         host: str = &#39;localhost&#39;,
         port: int = 8888,
-        base_path: str = &#34;/unmanic/api/v2/&#34;,
+        base_path: str = &#34;/unmanic/api/&#34;,
         request_timeout: int = 8,
         session: ClientSession = None,
         tls: bool = False,
@@ -369,19 +391,19 @@ class Unmanic(Client):
             Application: The application object.
         &#34;&#34;&#34;
 
-        workers = await self._request(&#34;workers/status&#34;)
+        workers = await self._request(&#34;v2/workers/status&#34;)
         if workers is None:
             raise UnmanicError(
                 &#34;Unmanic returned an empty API status response [workers/status]&#34;)
 
-        settings = await self._request(&#34;settings/read&#34;)
+        settings = await self._request(&#34;v2/settings/read&#34;)
         if settings is None:
             raise UnmanicError(
                 &#34;Unmanic returned an empty API status response [settings/read]&#34;)
 
         if self._application is None or full_update:
 
-            version = await self._request(&#34;version/read&#34;)
+            version = await self._request(&#34;v2/version/read&#34;)
             if version is None:
                 raise UnmanicError(
                     &#34;Unmanic returned an empty API version response [version/read]&#34;)
@@ -413,7 +435,7 @@ class Unmanic(Client):
         Returns:
             str: Unmanic server version
         &#34;&#34;&#34;
-        results = await self._request(&#34;version/read&#34;)
+        results = await self._request(&#34;v2/version/read&#34;)
         return results[&#39;version&#39;]
 
     async def pause_worker(self, worker_id: str) -&gt; bool:
@@ -427,7 +449,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(f&#34;v2/workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
         return results[&#39;success&#39;]
 
     async def pause_all_workers(self) -&gt; bool:
@@ -437,7 +459,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/worker/pause/all&#34;, method=&#39;POST&#39;)
+        results = await self._request(&#34;v2/workers/worker/pause/all&#34;, method=&#39;POST&#39;)
         return results[&#39;success&#39;]
 
     async def resume_worker(self, worker_id: str) -&gt; bool:
@@ -451,7 +473,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(f&#34;v2/workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
         return results[&#39;success&#39;]
 
     async def resume_all_workers(self) -&gt; bool:
@@ -461,7 +483,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/worker/resume/all&#34;, method=&#39;POST&#39;)
+        results = await self._request(&#34;v2/workers/worker/resume/all&#34;, method=&#39;POST&#39;)
         return results[&#39;success&#39;]
 
     async def terminate_worker(self, worker_id) -&gt; bool:
@@ -475,7 +497,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/worker/terminate&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(&#34;v2/workers/worker/terminate&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
         return results[&#39;success&#39;]
 
     async def get_workers_status(self) -&gt; List[Worker]:
@@ -485,7 +507,7 @@ class Unmanic(Client):
         Returns:
             Dict: Workers status
         &#34;&#34;&#34;
-        results = await self._request(&#34;workers/status&#34;)
+        results = await self._request(&#34;v2/workers/status&#34;)
         return [Worker.from_dict(result) for result in results[&#39;workers_status&#39;]]
 
     async def get_settings(self) -&gt; Settings:
@@ -495,7 +517,7 @@ class Unmanic(Client):
         Returns:
             Dict: Unmanic server settings
         &#34;&#34;&#34;
-        results = await self._request(&#34;settings/read&#34;)
+        results = await self._request(&#34;v2/settings/read&#34;)
         return Settings.from_dict(results[&#39;settings&#39;])
 
     async def set_settings(self, settings: Dict) -&gt; bool:
@@ -509,7 +531,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(&#34;settings/write&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;settings&#39;: settings}))
+        results = await self._request(&#34;v2/settings/write&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;settings&#39;: settings}))
         return results[&#39;success&#39;]
 
     async def get_workers_count(self) -&gt; int:
@@ -535,6 +557,26 @@ class Unmanic(Client):
         &#34;&#34;&#34;
         results = await self.set_settings({&#39;number_of_workers&#39;: number_of_workers})
         return results
+
+    async def trigger_library_scan(self) -&gt; bool:
+        &#34;&#34;&#34;
+        Trigger library scan
+
+        Returns:
+            bool: True if successful.
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v1/pending/rescan&#34;, method=&#39;GET&#39;)
+        return results[&#39;success&#39;]
+
+    async def get_pending_tasks(self, start=0, length=10, search_value=&#34;&#34;, order_by=&#34;priority&#34;, order_direction=&#34;desc&#34;) -&gt; List[PendingTask]:
+        &#34;&#34;&#34;
+        Get pending tasks
+
+        Returns:
+            Dict: TaskQueue
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
+        return TaskQueue.from_dict(results)
 
     async def __aenter__(self) -&gt; &#34;Unmanic&#34;:
         &#34;&#34;&#34;Async enter.&#34;&#34;&#34;
@@ -591,6 +633,31 @@ def app(self) -&gt; Optional[Application]:
     return results.installation_name</code></pre>
 </details>
 </dd>
+<dt id="unmanic_api.unmanic.Unmanic.get_pending_tasks"><code class="name flex">
+<span>async def <span class="ident">get_pending_tasks</span></span>(<span>self, start=0, length=10, search_value='', order_by='priority', order_direction='desc') ‑> List[<a title="unmanic_api.models.PendingTask" href="models.html#unmanic_api.models.PendingTask">PendingTask</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get pending tasks</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>TaskQueue</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def get_pending_tasks(self, start=0, length=10, search_value=&#34;&#34;, order_by=&#34;priority&#34;, order_direction=&#34;desc&#34;) -&gt; List[PendingTask]:
+    &#34;&#34;&#34;
+    Get pending tasks
+
+    Returns:
+        Dict: TaskQueue
+    &#34;&#34;&#34;
+    results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
+    return TaskQueue.from_dict(results)</code></pre>
+</details>
+</dd>
 <dt id="unmanic_api.unmanic.Unmanic.get_settings"><code class="name flex">
 <span>async def <span class="ident">get_settings</span></span>(<span>self) ‑> <a title="unmanic_api.models.Settings" href="models.html#unmanic_api.models.Settings">Settings</a></span>
 </code></dt>
@@ -612,7 +679,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         Dict: Unmanic server settings
     &#34;&#34;&#34;
-    results = await self._request(&#34;settings/read&#34;)
+    results = await self._request(&#34;v2/settings/read&#34;)
     return Settings.from_dict(results[&#39;settings&#39;])</code></pre>
 </details>
 </dd>
@@ -637,7 +704,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         str: Unmanic server version
     &#34;&#34;&#34;
-    results = await self._request(&#34;version/read&#34;)
+    results = await self._request(&#34;v2/version/read&#34;)
     return results[&#39;version&#39;]</code></pre>
 </details>
 </dd>
@@ -687,7 +754,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         Dict: Workers status
     &#34;&#34;&#34;
-    results = await self._request(&#34;workers/status&#34;)
+    results = await self._request(&#34;v2/workers/status&#34;)
     return [Worker.from_dict(result) for result in results[&#39;workers_status&#39;]]</code></pre>
 </details>
 </dd>
@@ -712,7 +779,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(&#34;workers/worker/pause/all&#34;, method=&#39;POST&#39;)
+    results = await self._request(&#34;v2/workers/worker/pause/all&#34;, method=&#39;POST&#39;)
     return results[&#39;success&#39;]</code></pre>
 </details>
 </dd>
@@ -743,7 +810,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(f&#34;workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+    results = await self._request(f&#34;v2/workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
     return results[&#39;success&#39;]</code></pre>
 </details>
 </dd>
@@ -768,7 +835,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(&#34;workers/worker/resume/all&#34;, method=&#39;POST&#39;)
+    results = await self._request(&#34;v2/workers/worker/resume/all&#34;, method=&#39;POST&#39;)
     return results[&#39;success&#39;]</code></pre>
 </details>
 </dd>
@@ -799,7 +866,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(f&#34;workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+    results = await self._request(f&#34;v2/workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
     return results[&#39;success&#39;]</code></pre>
 </details>
 </dd>
@@ -830,7 +897,7 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(&#34;settings/write&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;settings&#39;: settings}))
+    results = await self._request(&#34;v2/settings/write&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;settings&#39;: settings}))
     return results[&#39;success&#39;]</code></pre>
 </details>
 </dd>
@@ -892,7 +959,32 @@ def app(self) -&gt; Optional[Application]:
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(&#34;workers/worker/terminate&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+    results = await self._request(&#34;v2/workers/worker/terminate&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+    return results[&#39;success&#39;]</code></pre>
+</details>
+</dd>
+<dt id="unmanic_api.unmanic.Unmanic.trigger_library_scan"><code class="name flex">
+<span>async def <span class="ident">trigger_library_scan</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trigger library scan</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if successful.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def trigger_library_scan(self) -&gt; bool:
+    &#34;&#34;&#34;
+    Trigger library scan
+
+    Returns:
+        bool: True if successful.
+    &#34;&#34;&#34;
+    results = await self._request(&#34;v1/pending/rescan&#34;, method=&#39;GET&#39;)
     return results[&#39;success&#39;]</code></pre>
 </details>
 </dd>
@@ -918,19 +1010,19 @@ def app(self) -&gt; Optional[Application]:
         Application: The application object.
     &#34;&#34;&#34;
 
-    workers = await self._request(&#34;workers/status&#34;)
+    workers = await self._request(&#34;v2/workers/status&#34;)
     if workers is None:
         raise UnmanicError(
             &#34;Unmanic returned an empty API status response [workers/status]&#34;)
 
-    settings = await self._request(&#34;settings/read&#34;)
+    settings = await self._request(&#34;v2/settings/read&#34;)
     if settings is None:
         raise UnmanicError(
             &#34;Unmanic returned an empty API status response [settings/read]&#34;)
 
     if self._application is None or full_update:
 
-        version = await self._request(&#34;version/read&#34;)
+        version = await self._request(&#34;v2/version/read&#34;)
         if version is None:
             raise UnmanicError(
                 &#34;Unmanic returned an empty API version response [version/read]&#34;)
@@ -977,6 +1069,7 @@ def app(self) -&gt; Optional[Application]:
 <ul class="">
 <li><code><a title="unmanic_api.unmanic.Unmanic.app" href="#unmanic_api.unmanic.Unmanic.app">app</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_installation_name" href="#unmanic_api.unmanic.Unmanic.get_installation_name">get_installation_name</a></code></li>
+<li><code><a title="unmanic_api.unmanic.Unmanic.get_pending_tasks" href="#unmanic_api.unmanic.Unmanic.get_pending_tasks">get_pending_tasks</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_settings" href="#unmanic_api.unmanic.Unmanic.get_settings">get_settings</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_version" href="#unmanic_api.unmanic.Unmanic.get_version">get_version</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_workers_count" href="#unmanic_api.unmanic.Unmanic.get_workers_count">get_workers_count</a></code></li>
@@ -988,6 +1081,7 @@ def app(self) -&gt; Optional[Application]:
 <li><code><a title="unmanic_api.unmanic.Unmanic.set_settings" href="#unmanic_api.unmanic.Unmanic.set_settings">set_settings</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.set_workers_count" href="#unmanic_api.unmanic.Unmanic.set_workers_count">set_workers_count</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.terminate_worker" href="#unmanic_api.unmanic.Unmanic.terminate_worker">terminate_worker</a></code></li>
+<li><code><a title="unmanic_api.unmanic.Unmanic.trigger_library_scan" href="#unmanic_api.unmanic.Unmanic.trigger_library_scan">trigger_library_scan</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.update" href="#unmanic_api.unmanic.Unmanic.update">update</a></code></li>
 </ul>
 </li>

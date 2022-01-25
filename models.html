@@ -79,6 +79,65 @@ class Worker:
             current_task=data.get(&#34;current_task&#34;),
         )
 
+@dataclass(frozen=True)
+class TaskQueue:
+    &#34;&#34;&#34;
+    Object holding task queue information from Unmanic.
+
+    Attributes:
+
+    recordsTotal: The total number of records.
+
+    recordsFiltered: The number of records after filtering.
+
+    results: The list of tasks.
+    &#34;&#34;&#34;
+
+    recordsTotal: int
+    recordsFiltered: int
+    results: List
+
+    @staticmethod
+    def from_dict(data: dict):
+        return TaskQueue(
+            recordsTotal=data.get(&#34;recordsTotal&#34;),
+            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+            results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
+        )
+
+@dataclass(frozen=True)
+class PendingTask:
+    &#34;&#34;&#34;
+    Object holding pending task information from Unmanic.
+
+    Attributes:
+
+    id: The task id.
+
+    abspath: The absolute path of the file.
+
+    priority: The priority of the task.
+
+    type: The type of the task.
+
+    status: The status of the task.
+    &#34;&#34;&#34;
+
+    id: int
+    abspath: str
+    priority: int
+    type: str
+    status: str
+
+    @staticmethod
+    def from_dict(data: dict):
+        return PendingTask(
+            id=data.get(&#34;id&#34;),
+            abspath=data.get(&#34;abspath&#34;),
+            priority=data.get(&#34;priority&#34;),
+            type=data.get(&#34;type&#34;),
+            status=data.get(&#34;status&#34;),
+        )
 
 @dataclass(frozen=True)
 class Settings:
@@ -366,6 +425,102 @@ class Application:
 </dd>
 </dl>
 </dd>
+<dt id="unmanic_api.models.PendingTask"><code class="flex name class">
+<span>class <span class="ident">PendingTask</span></span>
+<span>(</span><span>id: int, abspath: str, priority: int, type: str, status: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Object holding pending task information from Unmanic.</p>
+<p>Attributes:</p>
+<p>id: The task id.</p>
+<p>abspath: The absolute path of the file.</p>
+<p>priority: The priority of the task.</p>
+<p>type: The type of the task.</p>
+<p>status: The status of the task.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PendingTask:
+    &#34;&#34;&#34;
+    Object holding pending task information from Unmanic.
+
+    Attributes:
+
+    id: The task id.
+
+    abspath: The absolute path of the file.
+
+    priority: The priority of the task.
+
+    type: The type of the task.
+
+    status: The status of the task.
+    &#34;&#34;&#34;
+
+    id: int
+    abspath: str
+    priority: int
+    type: str
+    status: str
+
+    @staticmethod
+    def from_dict(data: dict):
+        return PendingTask(
+            id=data.get(&#34;id&#34;),
+            abspath=data.get(&#34;abspath&#34;),
+            priority=data.get(&#34;priority&#34;),
+            type=data.get(&#34;type&#34;),
+            status=data.get(&#34;status&#34;),
+        )</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="unmanic_api.models.PendingTask.abspath"><code class="name">var <span class="ident">abspath</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.PendingTask.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.PendingTask.priority"><code class="name">var <span class="ident">priority</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.PendingTask.status"><code class="name">var <span class="ident">status</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.PendingTask.type"><code class="name">var <span class="ident">type</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="unmanic_api.models.PendingTask.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>data: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def from_dict(data: dict):
+    return PendingTask(
+        id=data.get(&#34;id&#34;),
+        abspath=data.get(&#34;abspath&#34;),
+        priority=data.get(&#34;priority&#34;),
+        type=data.get(&#34;type&#34;),
+        status=data.get(&#34;status&#34;),
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="unmanic_api.models.Settings"><code class="flex name class">
 <span>class <span class="ident">Settings</span></span>
 <span>(</span><span>ui_port: int, config_path: str, log_path: str, plugins_path: str, userdata_path: str, debugging: bool, library_path: str, enable_library_scanner: bool, schedule_full_scan_minutes: int, follow_symlinks: bool, concurrent_file_testers: int, run_full_scan_on_start: bool, enable_inotify: bool, clear_pending_tasks_on_restart: bool, number_of_workers: int, cache_path: str, installation_name: str, distributed_worker_count_target: int)</span>
@@ -596,6 +751,82 @@ def from_dict(data: dict):
 </dd>
 </dl>
 </dd>
+<dt id="unmanic_api.models.TaskQueue"><code class="flex name class">
+<span>class <span class="ident">TaskQueue</span></span>
+<span>(</span><span>recordsTotal: int, recordsFiltered: int, results: List[~T])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Object holding task queue information from Unmanic.</p>
+<p>Attributes:</p>
+<p>recordsTotal: The total number of records.</p>
+<p>recordsFiltered: The number of records after filtering.</p>
+<p>results: The list of tasks.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TaskQueue:
+    &#34;&#34;&#34;
+    Object holding task queue information from Unmanic.
+
+    Attributes:
+
+    recordsTotal: The total number of records.
+
+    recordsFiltered: The number of records after filtering.
+
+    results: The list of tasks.
+    &#34;&#34;&#34;
+
+    recordsTotal: int
+    recordsFiltered: int
+    results: List
+
+    @staticmethod
+    def from_dict(data: dict):
+        return TaskQueue(
+            recordsTotal=data.get(&#34;recordsTotal&#34;),
+            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+            results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
+        )</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="unmanic_api.models.TaskQueue.recordsFiltered"><code class="name">var <span class="ident">recordsFiltered</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.TaskQueue.recordsTotal"><code class="name">var <span class="ident">recordsTotal</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.TaskQueue.results"><code class="name">var <span class="ident">results</span> : List[~T]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="unmanic_api.models.TaskQueue.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>data: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def from_dict(data: dict):
+    return TaskQueue(
+        recordsTotal=data.get(&#34;recordsTotal&#34;),
+        recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+        results=[PendingTask.from_dict(pending_task) for pending_task in data.get(&#34;results&#34;)],
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="unmanic_api.models.Worker"><code class="flex name class">
 <span>class <span class="ident">Worker</span></span>
 <span>(</span><span>id: str, name: str, idle: bool, paused: bool, start_time: <module 'datetime' from '/opt/hostedtoolcache/Python/3.8.12/x64/lib/python3.8/datetime.py'>, current_file: str, current_task: int)</span>
@@ -740,6 +971,17 @@ def from_dict(data: dict):
 </ul>
 </li>
 <li>
+<h4><code><a title="unmanic_api.models.PendingTask" href="#unmanic_api.models.PendingTask">PendingTask</a></code></h4>
+<ul class="two-column">
+<li><code><a title="unmanic_api.models.PendingTask.abspath" href="#unmanic_api.models.PendingTask.abspath">abspath</a></code></li>
+<li><code><a title="unmanic_api.models.PendingTask.from_dict" href="#unmanic_api.models.PendingTask.from_dict">from_dict</a></code></li>
+<li><code><a title="unmanic_api.models.PendingTask.id" href="#unmanic_api.models.PendingTask.id">id</a></code></li>
+<li><code><a title="unmanic_api.models.PendingTask.priority" href="#unmanic_api.models.PendingTask.priority">priority</a></code></li>
+<li><code><a title="unmanic_api.models.PendingTask.status" href="#unmanic_api.models.PendingTask.status">status</a></code></li>
+<li><code><a title="unmanic_api.models.PendingTask.type" href="#unmanic_api.models.PendingTask.type">type</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="unmanic_api.models.Settings" href="#unmanic_api.models.Settings">Settings</a></code></h4>
 <ul class="">
 <li><code><a title="unmanic_api.models.Settings.cache_path" href="#unmanic_api.models.Settings.cache_path">cache_path</a></code></li>
@@ -761,6 +1003,15 @@ def from_dict(data: dict):
 <li><code><a title="unmanic_api.models.Settings.schedule_full_scan_minutes" href="#unmanic_api.models.Settings.schedule_full_scan_minutes">schedule_full_scan_minutes</a></code></li>
 <li><code><a title="unmanic_api.models.Settings.ui_port" href="#unmanic_api.models.Settings.ui_port">ui_port</a></code></li>
 <li><code><a title="unmanic_api.models.Settings.userdata_path" href="#unmanic_api.models.Settings.userdata_path">userdata_path</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="unmanic_api.models.TaskQueue" href="#unmanic_api.models.TaskQueue">TaskQueue</a></code></h4>
+<ul class="">
+<li><code><a title="unmanic_api.models.TaskQueue.from_dict" href="#unmanic_api.models.TaskQueue.from_dict">from_dict</a></code></li>
+<li><code><a title="unmanic_api.models.TaskQueue.recordsFiltered" href="#unmanic_api.models.TaskQueue.recordsFiltered">recordsFiltered</a></code></li>
+<li><code><a title="unmanic_api.models.TaskQueue.recordsTotal" href="#unmanic_api.models.TaskQueue.recordsTotal">recordsTotal</a></code></li>
+<li><code><a title="unmanic_api.models.TaskQueue.results" href="#unmanic_api.models.TaskQueue.results">results</a></code></li>
 </ul>
 </li>
 <li>
