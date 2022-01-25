@@ -90,7 +90,7 @@ class TaskQueue:
 
     recordsFiltered: The number of records after filtering.
 
-    results: The list of tasks.
+    results: The list of PendingTasks.
     &#34;&#34;&#34;
 
     recordsTotal: int
@@ -137,6 +137,145 @@ class PendingTask:
             priority=data.get(&#34;priority&#34;),
             type=data.get(&#34;type&#34;),
             status=data.get(&#34;status&#34;),
+        )
+
+@dataclass(frozen=True)
+class TaskHistory:
+    &#34;&#34;&#34;
+    Object holding task queue information from Unmanic.
+
+    Attributes:
+
+    recordsTotal: The total number of records.
+
+    recordsFiltered: The number of records after filtering.
+
+    results: The list of CompletedTasks.
+    &#34;&#34;&#34;
+
+    recordsTotal: int
+    recordsFiltered: int
+    results: List
+
+    @staticmethod
+    def from_dict(data: dict):
+        return TaskHistory(
+            recordsTotal=data.get(&#34;recordsTotal&#34;),
+            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+            results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
+        )
+
+@dataclass(frozen=True)
+class CompletedTask:
+    &#34;&#34;&#34;
+    Object holding completed task information from Unmanic.
+
+    Attributes:
+
+    id: The task id.
+
+    task_label: The task label.
+
+    task_success: Whether the task was successful.
+
+    finish_time: The finish time of the task.
+    &#34;&#34;&#34;
+
+    id: int
+    task_label: str
+    task_success: bool
+    finish_time: datetime
+
+    @staticmethod
+    def from_dict(data: dict):
+        return CompletedTask(
+            id=data.get(&#34;id&#34;),
+            task_label=data.get(&#34;task_label&#34;),
+            task_success=data.get(&#34;task_success&#34;),
+            finish_time=datetime.datetime.fromtimestamp(
+                int(float(data.get(&#34;finish_time&#34;)))),
+        )
+
+@dataclass(frozen=True)
+class SystemConfiguration:
+    &#34;&#34;&#34;
+    Object holding system configurtion from Unmanic.
+
+    Attributes:
+
+    python_version: The python version.
+
+    cpu_info_version_string: The cpu info version string.
+
+    arch: The architecture.
+
+    bits: The bits.
+
+    count: The CPU core count.
+
+    arch_string_raw: The raw architecture string.
+
+    vendor_id_raw: The raw CPU vendor id string.
+
+    brand_raw: The raw CPU brand string.
+
+    hz_advertised_friendly: The advertised CPU frequency.
+
+    hz_actual_friendly: The actual CPU frequency.
+
+    hz_advertised: The advertised CPU frequency.
+
+    hz_actual: The actual CPU frequency.
+
+    stepping: The CPU stepping.
+
+    model: The CPU model.
+
+    family: The CPU family.
+
+    flags: The CPU flags.
+
+    platform: The OS platform.
+    &#34;&#34;&#34;
+
+    python_version: str
+    cpu_info_version_string: str
+    arch: str
+    bits: int
+    count: int
+    arch_string_raw: str
+    vendor_id_raw: str
+    brand_raw: str
+    hz_advertised_friendly: str
+    hz_actual_friendly: str
+    hz_advertised: List[int]
+    hz_actual: List[int]
+    stepping: int
+    model: int
+    family: int
+    flags: List[str]
+    platform: List[str]
+
+    @staticmethod
+    def from_dict(data: dict):
+        return SystemConfiguration(
+            python_version=data.get(&#34;python&#34;),
+            cpu_info_version_string=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;cpu_info_version_string&#34;),
+            arch=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;arch&#34;),
+            bits=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;bits&#34;),
+            count=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;count&#34;),
+            arch_string_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;arch_string_raw&#34;),
+            vendor_id_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;vendor_id_raw&#34;),
+            brand_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;brand_raw&#34;),
+            hz_advertised_friendly=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_advertised_friendly&#34;),
+            hz_actual_friendly=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_actual_friendly&#34;),
+            hz_advertised=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_advertised&#34;),
+            hz_actual=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_actual&#34;),
+            stepping=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;stepping&#34;),
+            model=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;model&#34;),
+            family=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;family&#34;),
+            flags=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;flags&#34;),
+            platform=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;platform&#34;),
         )
 
 @dataclass(frozen=True)
@@ -237,6 +376,94 @@ class Settings:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="unmanic_api.models.CompletedTask"><code class="flex name class">
+<span>class <span class="ident">CompletedTask</span></span>
+<span>(</span><span>id: int, task_label: str, task_success: bool, finish_time: <module 'datetime' from '/opt/hostedtoolcache/Python/3.8.12/x64/lib/python3.8/datetime.py'>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Object holding completed task information from Unmanic.</p>
+<p>Attributes:</p>
+<p>id: The task id.</p>
+<p>task_label: The task label.</p>
+<p>task_success: Whether the task was successful.</p>
+<p>finish_time: The finish time of the task.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CompletedTask:
+    &#34;&#34;&#34;
+    Object holding completed task information from Unmanic.
+
+    Attributes:
+
+    id: The task id.
+
+    task_label: The task label.
+
+    task_success: Whether the task was successful.
+
+    finish_time: The finish time of the task.
+    &#34;&#34;&#34;
+
+    id: int
+    task_label: str
+    task_success: bool
+    finish_time: datetime
+
+    @staticmethod
+    def from_dict(data: dict):
+        return CompletedTask(
+            id=data.get(&#34;id&#34;),
+            task_label=data.get(&#34;task_label&#34;),
+            task_success=data.get(&#34;task_success&#34;),
+            finish_time=datetime.datetime.fromtimestamp(
+                int(float(data.get(&#34;finish_time&#34;)))),
+        )</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="unmanic_api.models.CompletedTask.finish_time"><code class="name">var <span class="ident">finish_time</span> : <module 'datetime' from '/opt/hostedtoolcache/Python/3.8.12/x64/lib/python3.8/datetime.py'></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.CompletedTask.id"><code class="name">var <span class="ident">id</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.CompletedTask.task_label"><code class="name">var <span class="ident">task_label</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.CompletedTask.task_success"><code class="name">var <span class="ident">task_success</span> : bool</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="unmanic_api.models.CompletedTask.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>data: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def from_dict(data: dict):
+    return CompletedTask(
+        id=data.get(&#34;id&#34;),
+        task_label=data.get(&#34;task_label&#34;),
+        task_success=data.get(&#34;task_success&#34;),
+        finish_time=datetime.datetime.fromtimestamp(
+            int(float(data.get(&#34;finish_time&#34;)))),
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="unmanic_api.models.PendingTask"><code class="flex name class">
 <span>class <span class="ident">PendingTask</span></span>
 <span>(</span><span>id: int, abspath: str, priority: int, type: str, status: str)</span>
@@ -563,6 +790,298 @@ def from_dict(data: dict):
 </dd>
 </dl>
 </dd>
+<dt id="unmanic_api.models.SystemConfiguration"><code class="flex name class">
+<span>class <span class="ident">SystemConfiguration</span></span>
+<span>(</span><span>python_version: str, cpu_info_version_string: str, arch: str, bits: int, count: int, arch_string_raw: str, vendor_id_raw: str, brand_raw: str, hz_advertised_friendly: str, hz_actual_friendly: str, hz_advertised: List[int], hz_actual: List[int], stepping: int, model: int, family: int, flags: List[str], platform: List[str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Object holding system configurtion from Unmanic.</p>
+<p>Attributes:</p>
+<p>python_version: The python version.</p>
+<p>cpu_info_version_string: The cpu info version string.</p>
+<p>arch: The architecture.</p>
+<p>bits: The bits.</p>
+<p>count: The CPU core count.</p>
+<p>arch_string_raw: The raw architecture string.</p>
+<p>vendor_id_raw: The raw CPU vendor id string.</p>
+<p>brand_raw: The raw CPU brand string.</p>
+<p>hz_advertised_friendly: The advertised CPU frequency.</p>
+<p>hz_actual_friendly: The actual CPU frequency.</p>
+<p>hz_advertised: The advertised CPU frequency.</p>
+<p>hz_actual: The actual CPU frequency.</p>
+<p>stepping: The CPU stepping.</p>
+<p>model: The CPU model.</p>
+<p>family: The CPU family.</p>
+<p>flags: The CPU flags.</p>
+<p>platform: The OS platform.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SystemConfiguration:
+    &#34;&#34;&#34;
+    Object holding system configurtion from Unmanic.
+
+    Attributes:
+
+    python_version: The python version.
+
+    cpu_info_version_string: The cpu info version string.
+
+    arch: The architecture.
+
+    bits: The bits.
+
+    count: The CPU core count.
+
+    arch_string_raw: The raw architecture string.
+
+    vendor_id_raw: The raw CPU vendor id string.
+
+    brand_raw: The raw CPU brand string.
+
+    hz_advertised_friendly: The advertised CPU frequency.
+
+    hz_actual_friendly: The actual CPU frequency.
+
+    hz_advertised: The advertised CPU frequency.
+
+    hz_actual: The actual CPU frequency.
+
+    stepping: The CPU stepping.
+
+    model: The CPU model.
+
+    family: The CPU family.
+
+    flags: The CPU flags.
+
+    platform: The OS platform.
+    &#34;&#34;&#34;
+
+    python_version: str
+    cpu_info_version_string: str
+    arch: str
+    bits: int
+    count: int
+    arch_string_raw: str
+    vendor_id_raw: str
+    brand_raw: str
+    hz_advertised_friendly: str
+    hz_actual_friendly: str
+    hz_advertised: List[int]
+    hz_actual: List[int]
+    stepping: int
+    model: int
+    family: int
+    flags: List[str]
+    platform: List[str]
+
+    @staticmethod
+    def from_dict(data: dict):
+        return SystemConfiguration(
+            python_version=data.get(&#34;python&#34;),
+            cpu_info_version_string=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;cpu_info_version_string&#34;),
+            arch=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;arch&#34;),
+            bits=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;bits&#34;),
+            count=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;count&#34;),
+            arch_string_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;arch_string_raw&#34;),
+            vendor_id_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;vendor_id_raw&#34;),
+            brand_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;brand_raw&#34;),
+            hz_advertised_friendly=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_advertised_friendly&#34;),
+            hz_actual_friendly=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_actual_friendly&#34;),
+            hz_advertised=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_advertised&#34;),
+            hz_actual=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_actual&#34;),
+            stepping=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;stepping&#34;),
+            model=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;model&#34;),
+            family=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;family&#34;),
+            flags=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;flags&#34;),
+            platform=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;platform&#34;),
+        )</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="unmanic_api.models.SystemConfiguration.arch"><code class="name">var <span class="ident">arch</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.arch_string_raw"><code class="name">var <span class="ident">arch_string_raw</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.bits"><code class="name">var <span class="ident">bits</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.brand_raw"><code class="name">var <span class="ident">brand_raw</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.count"><code class="name">var <span class="ident">count</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.cpu_info_version_string"><code class="name">var <span class="ident">cpu_info_version_string</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.family"><code class="name">var <span class="ident">family</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.flags"><code class="name">var <span class="ident">flags</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.hz_actual"><code class="name">var <span class="ident">hz_actual</span> : List[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.hz_actual_friendly"><code class="name">var <span class="ident">hz_actual_friendly</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.hz_advertised"><code class="name">var <span class="ident">hz_advertised</span> : List[int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.hz_advertised_friendly"><code class="name">var <span class="ident">hz_advertised_friendly</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.model"><code class="name">var <span class="ident">model</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.platform"><code class="name">var <span class="ident">platform</span> : List[str]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.python_version"><code class="name">var <span class="ident">python_version</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.stepping"><code class="name">var <span class="ident">stepping</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.SystemConfiguration.vendor_id_raw"><code class="name">var <span class="ident">vendor_id_raw</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="unmanic_api.models.SystemConfiguration.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>data: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def from_dict(data: dict):
+    return SystemConfiguration(
+        python_version=data.get(&#34;python&#34;),
+        cpu_info_version_string=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;cpu_info_version_string&#34;),
+        arch=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;arch&#34;),
+        bits=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;bits&#34;),
+        count=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;count&#34;),
+        arch_string_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;arch_string_raw&#34;),
+        vendor_id_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;vendor_id_raw&#34;),
+        brand_raw=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;brand_raw&#34;),
+        hz_advertised_friendly=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_advertised_friendly&#34;),
+        hz_actual_friendly=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_actual_friendly&#34;),
+        hz_advertised=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_advertised&#34;),
+        hz_actual=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;hz_actual&#34;),
+        stepping=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;stepping&#34;),
+        model=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;model&#34;),
+        family=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;family&#34;),
+        flags=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;flags&#34;),
+        platform=data.get(&#34;devices&#34;).get(&#34;cpu_info&#34;).get(&#34;platform&#34;),
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="unmanic_api.models.TaskHistory"><code class="flex name class">
+<span>class <span class="ident">TaskHistory</span></span>
+<span>(</span><span>recordsTotal: int, recordsFiltered: int, results: List[~T])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Object holding task queue information from Unmanic.</p>
+<p>Attributes:</p>
+<p>recordsTotal: The total number of records.</p>
+<p>recordsFiltered: The number of records after filtering.</p>
+<p>results: The list of CompletedTasks.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TaskHistory:
+    &#34;&#34;&#34;
+    Object holding task queue information from Unmanic.
+
+    Attributes:
+
+    recordsTotal: The total number of records.
+
+    recordsFiltered: The number of records after filtering.
+
+    results: The list of CompletedTasks.
+    &#34;&#34;&#34;
+
+    recordsTotal: int
+    recordsFiltered: int
+    results: List
+
+    @staticmethod
+    def from_dict(data: dict):
+        return TaskHistory(
+            recordsTotal=data.get(&#34;recordsTotal&#34;),
+            recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+            results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
+        )</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="unmanic_api.models.TaskHistory.recordsFiltered"><code class="name">var <span class="ident">recordsFiltered</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.TaskHistory.recordsTotal"><code class="name">var <span class="ident">recordsTotal</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="unmanic_api.models.TaskHistory.results"><code class="name">var <span class="ident">results</span> : List[~T]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="unmanic_api.models.TaskHistory.from_dict"><code class="name flex">
+<span>def <span class="ident">from_dict</span></span>(<span>data: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def from_dict(data: dict):
+    return TaskHistory(
+        recordsTotal=data.get(&#34;recordsTotal&#34;),
+        recordsFiltered=data.get(&#34;recordsFiltered&#34;),
+        results=[CompletedTask.from_dict(completed_task) for completed_task in data.get(&#34;results&#34;)],
+    )</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="unmanic_api.models.TaskQueue"><code class="flex name class">
 <span>class <span class="ident">TaskQueue</span></span>
 <span>(</span><span>recordsTotal: int, recordsFiltered: int, results: List[~T])</span>
@@ -572,7 +1091,7 @@ def from_dict(data: dict):
 <p>Attributes:</p>
 <p>recordsTotal: The total number of records.</p>
 <p>recordsFiltered: The number of records after filtering.</p>
-<p>results: The list of tasks.</p></div>
+<p>results: The list of PendingTasks.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -587,7 +1106,7 @@ def from_dict(data: dict):
 
     recordsFiltered: The number of records after filtering.
 
-    results: The list of tasks.
+    results: The list of PendingTasks.
     &#34;&#34;&#34;
 
     recordsTotal: int
@@ -774,6 +1293,16 @@ def from_dict(data: dict):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="unmanic_api.models.CompletedTask" href="#unmanic_api.models.CompletedTask">CompletedTask</a></code></h4>
+<ul class="">
+<li><code><a title="unmanic_api.models.CompletedTask.finish_time" href="#unmanic_api.models.CompletedTask.finish_time">finish_time</a></code></li>
+<li><code><a title="unmanic_api.models.CompletedTask.from_dict" href="#unmanic_api.models.CompletedTask.from_dict">from_dict</a></code></li>
+<li><code><a title="unmanic_api.models.CompletedTask.id" href="#unmanic_api.models.CompletedTask.id">id</a></code></li>
+<li><code><a title="unmanic_api.models.CompletedTask.task_label" href="#unmanic_api.models.CompletedTask.task_label">task_label</a></code></li>
+<li><code><a title="unmanic_api.models.CompletedTask.task_success" href="#unmanic_api.models.CompletedTask.task_success">task_success</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="unmanic_api.models.PendingTask" href="#unmanic_api.models.PendingTask">PendingTask</a></code></h4>
 <ul class="two-column">
 <li><code><a title="unmanic_api.models.PendingTask.abspath" href="#unmanic_api.models.PendingTask.abspath">abspath</a></code></li>
@@ -806,6 +1335,38 @@ def from_dict(data: dict):
 <li><code><a title="unmanic_api.models.Settings.schedule_full_scan_minutes" href="#unmanic_api.models.Settings.schedule_full_scan_minutes">schedule_full_scan_minutes</a></code></li>
 <li><code><a title="unmanic_api.models.Settings.ui_port" href="#unmanic_api.models.Settings.ui_port">ui_port</a></code></li>
 <li><code><a title="unmanic_api.models.Settings.userdata_path" href="#unmanic_api.models.Settings.userdata_path">userdata_path</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="unmanic_api.models.SystemConfiguration" href="#unmanic_api.models.SystemConfiguration">SystemConfiguration</a></code></h4>
+<ul class="">
+<li><code><a title="unmanic_api.models.SystemConfiguration.arch" href="#unmanic_api.models.SystemConfiguration.arch">arch</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.arch_string_raw" href="#unmanic_api.models.SystemConfiguration.arch_string_raw">arch_string_raw</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.bits" href="#unmanic_api.models.SystemConfiguration.bits">bits</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.brand_raw" href="#unmanic_api.models.SystemConfiguration.brand_raw">brand_raw</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.count" href="#unmanic_api.models.SystemConfiguration.count">count</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.cpu_info_version_string" href="#unmanic_api.models.SystemConfiguration.cpu_info_version_string">cpu_info_version_string</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.family" href="#unmanic_api.models.SystemConfiguration.family">family</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.flags" href="#unmanic_api.models.SystemConfiguration.flags">flags</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.from_dict" href="#unmanic_api.models.SystemConfiguration.from_dict">from_dict</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.hz_actual" href="#unmanic_api.models.SystemConfiguration.hz_actual">hz_actual</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.hz_actual_friendly" href="#unmanic_api.models.SystemConfiguration.hz_actual_friendly">hz_actual_friendly</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.hz_advertised" href="#unmanic_api.models.SystemConfiguration.hz_advertised">hz_advertised</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.hz_advertised_friendly" href="#unmanic_api.models.SystemConfiguration.hz_advertised_friendly">hz_advertised_friendly</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.model" href="#unmanic_api.models.SystemConfiguration.model">model</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.platform" href="#unmanic_api.models.SystemConfiguration.platform">platform</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.python_version" href="#unmanic_api.models.SystemConfiguration.python_version">python_version</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.stepping" href="#unmanic_api.models.SystemConfiguration.stepping">stepping</a></code></li>
+<li><code><a title="unmanic_api.models.SystemConfiguration.vendor_id_raw" href="#unmanic_api.models.SystemConfiguration.vendor_id_raw">vendor_id_raw</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="unmanic_api.models.TaskHistory" href="#unmanic_api.models.TaskHistory">TaskHistory</a></code></h4>
+<ul class="">
+<li><code><a title="unmanic_api.models.TaskHistory.from_dict" href="#unmanic_api.models.TaskHistory.from_dict">from_dict</a></code></li>
+<li><code><a title="unmanic_api.models.TaskHistory.recordsFiltered" href="#unmanic_api.models.TaskHistory.recordsFiltered">recordsFiltered</a></code></li>
+<li><code><a title="unmanic_api.models.TaskHistory.recordsTotal" href="#unmanic_api.models.TaskHistory.recordsTotal">recordsTotal</a></code></li>
+<li><code><a title="unmanic_api.models.TaskHistory.results" href="#unmanic_api.models.TaskHistory.results">results</a></code></li>
 </ul>
 </li>
 <li>

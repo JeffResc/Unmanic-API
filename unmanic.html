@@ -40,6 +40,9 @@ from .models import (
     Settings,
     PendingTask,
     TaskQueue,
+    CompletedTask,
+    TaskHistory,
+    SystemConfiguration,
 )
 
 
@@ -248,6 +251,26 @@ class Unmanic(Client):
         &#34;&#34;&#34;
         results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
         return TaskQueue.from_dict(results)
+
+    async def get_task_history(self, start=0, length=10, search_value=&#34;&#34;, order_by=&#34;finish_time&#34;, order_direction=&#34;desc&#34;) -&gt; List[CompletedTask]:
+        &#34;&#34;&#34;
+        Get task history
+
+        Returns:
+            Dict: TaskHistory
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v2/history/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
+        return TaskHistory.from_dict(results)
+
+    async def get_system_configuration(self) -&gt; SystemConfiguration:
+        &#34;&#34;&#34;
+        Get system configuration
+
+        Returns:
+            Dict: SystemConfiguration
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v2/settings/configuration&#34;)
+        return SystemConfiguration.from_dict(results[&#34;configuration&#34;])
 
     async def __aenter__(self) -&gt; &#34;Unmanic&#34;:
         &#34;&#34;&#34;Async enter.&#34;&#34;&#34;
@@ -493,6 +516,26 @@ class Unmanic(Client):
         results = await self._request(&#34;v2/pending/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
         return TaskQueue.from_dict(results)
 
+    async def get_task_history(self, start=0, length=10, search_value=&#34;&#34;, order_by=&#34;finish_time&#34;, order_direction=&#34;desc&#34;) -&gt; List[CompletedTask]:
+        &#34;&#34;&#34;
+        Get task history
+
+        Returns:
+            Dict: TaskHistory
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v2/history/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
+        return TaskHistory.from_dict(results)
+
+    async def get_system_configuration(self) -&gt; SystemConfiguration:
+        &#34;&#34;&#34;
+        Get system configuration
+
+        Returns:
+            Dict: SystemConfiguration
+        &#34;&#34;&#34;
+        results = await self._request(&#34;v2/settings/configuration&#34;)
+        return SystemConfiguration.from_dict(results[&#34;configuration&#34;])
+
     async def __aenter__(self) -&gt; &#34;Unmanic&#34;:
         &#34;&#34;&#34;Async enter.&#34;&#34;&#34;
         return self
@@ -580,6 +623,56 @@ class Unmanic(Client):
     &#34;&#34;&#34;
     results = await self._request(&#34;v2/settings/read&#34;)
     return Settings.from_dict(results[&#39;settings&#39;])</code></pre>
+</details>
+</dd>
+<dt id="unmanic_api.unmanic.Unmanic.get_system_configuration"><code class="name flex">
+<span>async def <span class="ident">get_system_configuration</span></span>(<span>self) ‑> <a title="unmanic_api.models.SystemConfiguration" href="models.html#unmanic_api.models.SystemConfiguration">SystemConfiguration</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get system configuration</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>SystemConfiguration</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def get_system_configuration(self) -&gt; SystemConfiguration:
+    &#34;&#34;&#34;
+    Get system configuration
+
+    Returns:
+        Dict: SystemConfiguration
+    &#34;&#34;&#34;
+    results = await self._request(&#34;v2/settings/configuration&#34;)
+    return SystemConfiguration.from_dict(results[&#34;configuration&#34;])</code></pre>
+</details>
+</dd>
+<dt id="unmanic_api.unmanic.Unmanic.get_task_history"><code class="name flex">
+<span>async def <span class="ident">get_task_history</span></span>(<span>self, start=0, length=10, search_value='', order_by='finish_time', order_direction='desc') ‑> List[<a title="unmanic_api.models.CompletedTask" href="models.html#unmanic_api.models.CompletedTask">CompletedTask</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get task history</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Dict</code></dt>
+<dd>TaskHistory</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def get_task_history(self, start=0, length=10, search_value=&#34;&#34;, order_by=&#34;finish_time&#34;, order_direction=&#34;desc&#34;) -&gt; List[CompletedTask]:
+    &#34;&#34;&#34;
+    Get task history
+
+    Returns:
+        Dict: TaskHistory
+    &#34;&#34;&#34;
+    results = await self._request(&#34;v2/history/tasks&#34;, method=&#39;POST&#39;, data=json.dumps({&#39;start&#39;: start, &#39;length&#39;: length, &#39;search_value&#39;: search_value, &#39;order_by&#39;: order_by, &#39;order_direction&#39;: order_direction}))
+    return TaskHistory.from_dict(results)</code></pre>
 </details>
 </dd>
 <dt id="unmanic_api.unmanic.Unmanic.get_version"><code class="name flex">
@@ -919,6 +1012,8 @@ class Unmanic(Client):
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_installation_name" href="#unmanic_api.unmanic.Unmanic.get_installation_name">get_installation_name</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_pending_tasks" href="#unmanic_api.unmanic.Unmanic.get_pending_tasks">get_pending_tasks</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_settings" href="#unmanic_api.unmanic.Unmanic.get_settings">get_settings</a></code></li>
+<li><code><a title="unmanic_api.unmanic.Unmanic.get_system_configuration" href="#unmanic_api.unmanic.Unmanic.get_system_configuration">get_system_configuration</a></code></li>
+<li><code><a title="unmanic_api.unmanic.Unmanic.get_task_history" href="#unmanic_api.unmanic.Unmanic.get_task_history">get_task_history</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_version" href="#unmanic_api.unmanic.Unmanic.get_version">get_version</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_workers_count" href="#unmanic_api.unmanic.Unmanic.get_workers_count">get_workers_count</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_workers_status" href="#unmanic_api.unmanic.Unmanic.get_workers_status">get_workers_status</a></code></li>
