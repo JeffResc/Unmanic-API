@@ -13,6 +13,7 @@ from .models import (
     TaskQueue,
     CompletedTask,
     TaskHistory,
+    SystemConfiguration,
 )
 
 
@@ -231,6 +232,16 @@ class Unmanic(Client):
         """
         results = await self._request("v2/history/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
         return TaskHistory.from_dict(results)
+
+    async def get_system_configuration(self) -> SystemConfiguration:
+        """
+        Get system configuration
+
+        Returns:
+            Dict: SystemConfiguration
+        """
+        results = await self._request("v2/settings/configuration")
+        return SystemConfiguration.from_dict(results["configuration"])
 
     async def __aenter__(self) -> "Unmanic":
         """Async enter."""

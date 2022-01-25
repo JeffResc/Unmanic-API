@@ -168,6 +168,88 @@ class CompletedTask:
         )
 
 @dataclass(frozen=True)
+class SystemConfiguration:
+    """
+    Object holding system configurtion from Unmanic.
+
+    Attributes:
+
+    python_version: The python version.
+
+    cpu_info_version_string: The cpu info version string.
+
+    arch: The architecture.
+
+    bits: The bits.
+
+    count: The CPU core count.
+
+    arch_string_raw: The raw architecture string.
+
+    vendor_id_raw: The raw CPU vendor id string.
+
+    brand_raw: The raw CPU brand string.
+
+    hz_advertised_friendly: The advertised CPU frequency.
+
+    hz_actual_friendly: The actual CPU frequency.
+
+    hz_advertised: The advertised CPU frequency.
+
+    hz_actual: The actual CPU frequency.
+
+    stepping: The CPU stepping.
+
+    model: The CPU model.
+
+    family: The CPU family.
+
+    flags: The CPU flags.
+
+    platform: The OS platform.
+    """
+
+    python_version: str
+    cpu_info_version_string: str
+    arch: str
+    bits: int
+    count: int
+    arch_string_raw: str
+    vendor_id_raw: str
+    brand_raw: str
+    hz_advertised_friendly: str
+    hz_actual_friendly: str
+    hz_advertised: List[int]
+    hz_actual: List[int]
+    stepping: int
+    model: int
+    family: int
+    flags: List[str]
+    platform: List[str]
+
+    @staticmethod
+    def from_dict(data: dict):
+        return SystemConfiguration(
+            python_version=data.get("python"),
+            cpu_info_version_string=data.get("devices").get("cpu_info").get("cpu_info_version_string"),
+            arch=data.get("devices").get("cpu_info").get("arch"),
+            bits=data.get("devices").get("cpu_info").get("bits"),
+            count=data.get("devices").get("cpu_info").get("count"),
+            arch_string_raw=data.get("devices").get("cpu_info").get("arch_string_raw"),
+            vendor_id_raw=data.get("devices").get("cpu_info").get("vendor_id_raw"),
+            brand_raw=data.get("devices").get("cpu_info").get("brand_raw"),
+            hz_advertised_friendly=data.get("devices").get("cpu_info").get("hz_advertised_friendly"),
+            hz_actual_friendly=data.get("devices").get("cpu_info").get("hz_actual_friendly"),
+            hz_advertised=data.get("devices").get("cpu_info").get("hz_advertised"),
+            hz_actual=data.get("devices").get("cpu_info").get("hz_actual"),
+            stepping=data.get("devices").get("cpu_info").get("stepping"),
+            model=data.get("devices").get("cpu_info").get("model"),
+            family=data.get("devices").get("cpu_info").get("family"),
+            flags=data.get("devices").get("cpu_info").get("flags"),
+            platform=data.get("devices").get("cpu_info").get("platform"),
+        )
+
+@dataclass(frozen=True)
 class Settings:
     """
     Object holding settings from Unmanic.

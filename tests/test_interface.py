@@ -115,6 +115,28 @@ async def test_get_settings(aresponses):
         assert isinstance(response, models.Settings)
 
 @pytest.mark.asyncio
+async def test_get_system_configuration(aresponses):
+    """Test get_system_configuration() method is handled correctly."""
+    aresponses.add(
+        MATCH_HOST,
+        "/unmanic/api/v2/settings/configuration",
+        "GET",
+        aresponses.Response(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            text=load_fixture("configuration.json"),
+        ),
+        match_querystring=True,
+    )
+
+    async with ClientSession() as session:
+        unmanic = Unmanic(HOST, PORT, session=session)
+        response = await unmanic.get_system_configuration()
+
+        assert response
+        assert isinstance(response, models.SystemConfiguration)
+
+@pytest.mark.asyncio
 async def test_get_version(aresponses):
     """Test get_version() method is handled correctly."""
     aresponses.add(
