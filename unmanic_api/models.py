@@ -32,7 +32,7 @@ class Worker:
     id: str
     name: str
     idle: bool
-    pasued: bool
+    paused: bool
     start_time: datetime
     current_file: str
     current_task: int
@@ -43,7 +43,7 @@ class Worker:
             id=data.get("id"),
             name=data.get("name"),
             idle=data.get("idle"),
-            pasued=data.get("paused"),
+            paused=data.get("paused"),
             start_time=datetime.datetime.fromtimestamp(
                 int(float(data.get("start_time")))),
             current_file=data.get("current_file"),
