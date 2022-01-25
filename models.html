@@ -61,7 +61,7 @@ class Worker:
     id: str
     name: str
     idle: bool
-    pasued: bool
+    paused: bool
     start_time: datetime
     current_file: str
     current_task: int
@@ -72,7 +72,7 @@ class Worker:
             id=data.get(&#34;id&#34;),
             name=data.get(&#34;name&#34;),
             idle=data.get(&#34;idle&#34;),
-            pasued=data.get(&#34;paused&#34;),
+            paused=data.get(&#34;paused&#34;),
             start_time=datetime.datetime.fromtimestamp(
                 int(float(data.get(&#34;start_time&#34;)))),
             current_file=data.get(&#34;current_file&#34;),
@@ -598,7 +598,7 @@ def from_dict(data: dict):
 </dd>
 <dt id="unmanic_api.models.Worker"><code class="flex name class">
 <span>class <span class="ident">Worker</span></span>
-<span>(</span><span>id: str, name: str, idle: bool, pasued: bool, start_time: <module 'datetime' from '/opt/hostedtoolcache/Python/3.8.12/x64/lib/python3.8/datetime.py'>, current_file: str, current_task: int)</span>
+<span>(</span><span>id: str, name: str, idle: bool, paused: bool, start_time: <module 'datetime' from '/opt/hostedtoolcache/Python/3.8.12/x64/lib/python3.8/datetime.py'>, current_file: str, current_task: int)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Object holding worker information from Unmanic.</p>
@@ -638,7 +638,7 @@ def from_dict(data: dict):
     id: str
     name: str
     idle: bool
-    pasued: bool
+    paused: bool
     start_time: datetime
     current_file: str
     current_task: int
@@ -649,7 +649,7 @@ def from_dict(data: dict):
             id=data.get(&#34;id&#34;),
             name=data.get(&#34;name&#34;),
             idle=data.get(&#34;idle&#34;),
-            pasued=data.get(&#34;paused&#34;),
+            paused=data.get(&#34;paused&#34;),
             start_time=datetime.datetime.fromtimestamp(
                 int(float(data.get(&#34;start_time&#34;)))),
             current_file=data.get(&#34;current_file&#34;),
@@ -678,7 +678,7 @@ def from_dict(data: dict):
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="unmanic_api.models.Worker.pasued"><code class="name">var <span class="ident">pasued</span> : bool</code></dt>
+<dt id="unmanic_api.models.Worker.paused"><code class="name">var <span class="ident">paused</span> : bool</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -704,7 +704,7 @@ def from_dict(data: dict):
         id=data.get(&#34;id&#34;),
         name=data.get(&#34;name&#34;),
         idle=data.get(&#34;idle&#34;),
-        pasued=data.get(&#34;paused&#34;),
+        paused=data.get(&#34;paused&#34;),
         start_time=datetime.datetime.fromtimestamp(
             int(float(data.get(&#34;start_time&#34;)))),
         current_file=data.get(&#34;current_file&#34;),
@@ -772,7 +772,7 @@ def from_dict(data: dict):
 <li><code><a title="unmanic_api.models.Worker.id" href="#unmanic_api.models.Worker.id">id</a></code></li>
 <li><code><a title="unmanic_api.models.Worker.idle" href="#unmanic_api.models.Worker.idle">idle</a></code></li>
 <li><code><a title="unmanic_api.models.Worker.name" href="#unmanic_api.models.Worker.name">name</a></code></li>
-<li><code><a title="unmanic_api.models.Worker.pasued" href="#unmanic_api.models.Worker.pasued">pasued</a></code></li>
+<li><code><a title="unmanic_api.models.Worker.paused" href="#unmanic_api.models.Worker.paused">paused</a></code></li>
 <li><code><a title="unmanic_api.models.Worker.start_time" href="#unmanic_api.models.Worker.start_time">start_time</a></code></li>
 </ul>
 </li>
