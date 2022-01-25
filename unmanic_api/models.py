@@ -50,6 +50,65 @@ class Worker:
             current_task=data.get("current_task"),
         )
 
+@dataclass(frozen=True)
+class TaskQueue:
+    """
+    Object holding task queue information from Unmanic.
+
+    Attributes:
+
+    recordsTotal: The total number of records.
+
+    recordsFiltered: The number of records after filtering.
+
+    results: The list of tasks.
+    """
+
+    recordsTotal: int
+    recordsFiltered: int
+    results: List
+
+    @staticmethod
+    def from_dict(data: dict):
+        return TaskQueue(
+            recordsTotal=data.get("recordsTotal"),
+            recordsFiltered=data.get("recordsFiltered"),
+            results=[PendingTask.from_dict(pending_task) for pending_task in data.get("results")],
+        )
+
+@dataclass(frozen=True)
+class PendingTask:
+    """
+    Object holding pending task information from Unmanic.
+
+    Attributes:
+
+    id: The task id.
+
+    abspath: The absolute path of the file.
+
+    priority: The priority of the task.
+
+    type: The type of the task.
+
+    status: The status of the task.
+    """
+
+    id: int
+    abspath: str
+    priority: int
+    type: str
+    status: str
+
+    @staticmethod
+    def from_dict(data: dict):
+        return PendingTask(
+            id=data.get("id"),
+            abspath=data.get("abspath"),
+            priority=data.get("priority"),
+            type=data.get("type"),
+            status=data.get("status"),
+        )
 
 @dataclass(frozen=True)
 class Settings:

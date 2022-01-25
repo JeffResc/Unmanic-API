@@ -10,6 +10,8 @@ from .models import (
     Application,
     Worker,
     Settings,
+    PendingTask,
+    TaskQueue,
 )
 
 
@@ -42,7 +44,7 @@ class Unmanic(Client):
         self,
         host: str = 'localhost',
         port: int = 8888,
-        base_path: str = "/unmanic/api/v2/",
+        base_path: str = "/unmanic/api/",
         request_timeout: int = 8,
         session: ClientSession = None,
         tls: bool = False,
@@ -74,19 +76,19 @@ class Unmanic(Client):
             Application: The application object.
         """
 
-        workers = await self._request("workers/status")
+        workers = await self._request("v2/workers/status")
         if workers is None:
             raise UnmanicError(
                 "Unmanic returned an empty API status response [workers/status]")
 
-        settings = await self._request("settings/read")
+        settings = await self._request("v2/settings/read")
         if settings is None:
             raise UnmanicError(
                 "Unmanic returned an empty API status response [settings/read]")
 
         if self._application is None or full_update:
 
-            version = await self._request("version/read")
+            version = await self._request("v2/version/read")
             if version is None:
                 raise UnmanicError(
                     "Unmanic returned an empty API version response [version/read]")
@@ -118,7 +120,7 @@ class Unmanic(Client):
         Returns:
             str: Unmanic server version
         """
-        results = await self._request("version/read")
+        results = await self._request("v2/version/read")
         return results['version']
 
     async def pause_worker(self, worker_id: str) -> bool:
@@ -132,7 +134,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
-        results = await self._request(f"workers/worker/pause", method='POST', data=json.dumps({"worker_id": worker_id}))
+        results = await self._request(f"v2/workers/worker/pause", method='POST', data=json.dumps({"worker_id": worker_id}))
         return results['success']
 
     async def pause_all_workers(self) -> bool:
@@ -142,7 +144,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
-        results = await self._request("workers/worker/pause/all", method='POST')
+        results = await self._request("v2/workers/worker/pause/all", method='POST')
         return results['success']
 
     async def resume_worker(self, worker_id: str) -> bool:
@@ -156,7 +158,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
-        results = await self._request(f"workers/worker/resume", method='POST', data=json.dumps({"worker_id": worker_id}))
+        results = await self._request(f"v2/workers/worker/resume", method='POST', data=json.dumps({"worker_id": worker_id}))
         return results['success']
 
     async def resume_all_workers(self) -> bool:
@@ -166,7 +168,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
-        results = await self._request("workers/worker/resume/all", method='POST')
+        results = await self._request("v2/workers/worker/resume/all", method='POST')
         return results['success']
 
     async def terminate_worker(self, worker_id) -> bool:
@@ -180,7 +182,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
-        results = await self._request("workers/worker/terminate", method='POST', data=json.dumps({"worker_id": worker_id}))
+        results = await self._request("v2/workers/worker/terminate", method='POST', data=json.dumps({"worker_id": worker_id}))
         return results['success']
 
     async def get_workers_status(self) -> List[Worker]:
@@ -190,7 +192,7 @@ class Unmanic(Client):
         Returns:
             Dict: Workers status
         """
-        results = await self._request("workers/status")
+        results = await self._request("v2/workers/status")
         return [Worker.from_dict(result) for result in results['workers_status']]
 
     async def get_settings(self) -> Settings:
@@ -200,7 +202,7 @@ class Unmanic(Client):
         Returns:
             Dict: Unmanic server settings
         """
-        results = await self._request("settings/read")
+        results = await self._request("v2/settings/read")
         return Settings.from_dict(results['settings'])
 
     async def set_settings(self, settings: Dict) -> bool:
@@ -214,7 +216,7 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         """
-        results = await self._request("settings/write", method='POST', data=json.dumps({'settings': settings}))
+        results = await self._request("v2/settings/write", method='POST', data=json.dumps({'settings': settings}))
         return results['success']
 
     async def get_workers_count(self) -> int:
@@ -240,6 +242,26 @@ class Unmanic(Client):
         """
         results = await self.set_settings({'number_of_workers': number_of_workers})
         return results
+
+    async def trigger_library_scan(self) -> bool:
+        """
+        Trigger library scan
+
+        Returns:
+            bool: True if successful.
+        """
+        results = await self._request("v1/pending/rescan", method='GET')
+        return results['success']
+
+    async def get_pending_tasks(self, start=0, length=10, search_value="", order_by="priority", order_direction="desc") -> List[PendingTask]:
+        """
+        Get pending tasks
+
+        Returns:
+            Dict: TaskQueue
+        """
+        results = await self._request("v2/pending/tasks", method='POST', data=json.dumps({'start': start, 'length': length, 'search_value': search_value, 'order_by': order_by, 'order_direction': order_direction}))
+        return TaskQueue.from_dict(results)
 
     async def __aenter__(self) -> "Unmanic":
         """Async enter."""

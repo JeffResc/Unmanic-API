@@ -36,7 +36,7 @@ async def test_json_request(aresponses):
 
     async with ClientSession() as session:
         client = Client(HOST, PORT, session=session)
-        response = await client._request("version/read")
+        response = await client._request("v2/version/read")
         assert response["version"] == "0.1.4~655b18b"
 
 @pytest.mark.asyncio
@@ -54,7 +54,7 @@ async def test_internal_session(aresponses):
     )
 
     async with Client(HOST, PORT) as client:
-        response = await client._request("version/read")
+        response = await client._request("v2/version/read")
         assert response["version"] == "0.1.4~655b18b"
 
 @pytest.mark.asyncio
@@ -70,7 +70,7 @@ async def test_timeout(aresponses):
     async with ClientSession() as session:
         client = Client(HOST, PORT, session=session, request_timeout=1)
         with pytest.raises(UnmanicConnectionError):
-            assert await client._request("version/read")
+            assert await client._request("v2/version/read")
 
 
 @pytest.mark.asyncio
@@ -79,7 +79,7 @@ async def test_client_error():
     async with ClientSession() as session:
         client = Client("#", PORT, session=session)
         with pytest.raises(UnmanicConnectionError):
-            assert await client._request("version/read")
+            assert await client._request("v2/version/read")
 
 @pytest.mark.asyncio
 async def test_http_error100(aresponses):
@@ -94,7 +94,7 @@ async def test_http_error100(aresponses):
     async with ClientSession() as session:
         client = Client(HOST, PORT, session=session)
         with pytest.raises(UnmanicError):
-            assert await client._request("version/read")
+            assert await client._request("v2/version/read")
 
 @pytest.mark.asyncio
 async def test_http_error400_json(aresponses):
@@ -113,7 +113,7 @@ async def test_http_error400_json(aresponses):
     async with ClientSession() as session:
         client = Client(HOST, PORT, session=session)
         with pytest.raises(UnmanicConnectionError):
-            response = await client._request("system/status")
+            response = await client._request("v2/version/read")
             assert response
             assert response["status"] == "NOK"
 
@@ -130,7 +130,7 @@ async def test_http_error404(aresponses):
     async with ClientSession() as session:
         client = Client(HOST, PORT, session=session)
         with pytest.raises(UnmanicBadRequestRequestedEndpointNotFoundError):
-            assert await client._request("version/read")
+            assert await client._request("v2/version/read")
 
 @pytest.mark.asyncio
 async def test_http_error405_json(aresponses):
@@ -149,7 +149,7 @@ async def test_http_error405_json(aresponses):
     async with ClientSession() as session:
         client = Client(HOST, PORT, session=session)
         with pytest.raises(UnmanicConnectionError):
-            response = await client._request("system/status")
+            response = await client._request("v2/version/read")
             assert response
             assert response["status"] == "NOK"
 
@@ -166,4 +166,4 @@ async def test_http_error500(aresponses):
     async with ClientSession() as session:
         client = Client(HOST, PORT, session=session)
         with pytest.raises(UnmanicInternalServerError):
-            assert await client._request("version/read")
+            assert await client._request("v2/version/read")
