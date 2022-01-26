@@ -13,7 +13,6 @@ from .models import (
     TaskQueue,
     CompletedTask,
     TaskHistory,
-    SystemConfiguration,
 )
 
 
@@ -302,21 +301,6 @@ class Unmanic(Client):
             return TaskHistory.from_dict(results)
         except TypeError:
             raise UnmanicError("Unable to get task history, type error, no results")
-
-    async def get_system_configuration(self) -> SystemConfiguration:
-        """
-        Get system configuration
-
-        Returns:
-            Dict: SystemConfiguration
-        """
-        results = await self._request("v2/settings/configuration")
-        try:
-            return SystemConfiguration.from_dict(results["configuration"])
-        except KeyError:
-            raise UnmanicError("Unable to get system configuration, key not found")
-        except TypeError:
-            raise UnmanicError("Unable to get system configuration, type error, no results")
 
     async def __aenter__(self) -> "Unmanic":
         """Async enter."""

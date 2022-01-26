@@ -275,68 +275,6 @@ async def test_get_settings_empty_string(aresponses):
             await unmanic.get_settings()
 
 @pytest.mark.asyncio
-async def test_get_system_configuration(aresponses):
-    """Test get_system_configuration() method is handled correctly."""
-    aresponses.add(
-        MATCH_HOST,
-        "/unmanic/api/v2/settings/configuration",
-        "GET",
-        aresponses.Response(
-            status=200,
-            headers={"Content-Type": "application/json"},
-            text=load_fixture("configuration.json"),
-        ),
-        match_querystring=True,
-    )
-
-    async with ClientSession() as session:
-        unmanic = Unmanic(HOST, PORT, session=session)
-        response = await unmanic.get_system_configuration()
-
-        assert response
-        assert isinstance(response, models.SystemConfiguration)
-
-@pytest.mark.asyncio
-async def test_get_system_configuration_empty_json(aresponses):
-    """Test get_system_configuration() method is handled correctly given empty json."""
-    aresponses.add(
-        MATCH_HOST,
-        "/unmanic/api/v2/settings/configuration",
-        "GET",
-        aresponses.Response(
-            status=200,
-            headers={"Content-Type": "application/json"},
-            text="{}",
-        ),
-        match_querystring=True,
-    )
-
-    async with ClientSession() as session:
-        unmanic = Unmanic(HOST, PORT, session=session)
-        with pytest.raises(UnmanicError):
-            await unmanic.get_system_configuration()
-
-@pytest.mark.asyncio
-async def test_get_system_configuration_empty_string(aresponses):
-    """Test get_system_configuration() method is handled correctly given an empty string."""
-    aresponses.add(
-        MATCH_HOST,
-        "/unmanic/api/v2/settings/configuration",
-        "GET",
-        aresponses.Response(
-            status=200,
-            headers={"Content-Type": "application/json"},
-            text="",
-        ),
-        match_querystring=True,
-    )
-
-    async with ClientSession() as session:
-        unmanic = Unmanic(HOST, PORT, session=session)
-        with pytest.raises(UnmanicError):
-            await unmanic.get_system_configuration()
-
-@pytest.mark.asyncio
 async def test_get_version(aresponses):
     """Test get_version() method is handled correctly."""
     aresponses.add(
