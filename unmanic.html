@@ -42,7 +42,6 @@ from .models import (
     TaskQueue,
     CompletedTask,
     TaskHistory,
-    SystemConfiguration,
 )
 
 
@@ -331,21 +330,6 @@ class Unmanic(Client):
             return TaskHistory.from_dict(results)
         except TypeError:
             raise UnmanicError(&#34;Unable to get task history, type error, no results&#34;)
-
-    async def get_system_configuration(self) -&gt; SystemConfiguration:
-        &#34;&#34;&#34;
-        Get system configuration
-
-        Returns:
-            Dict: SystemConfiguration
-        &#34;&#34;&#34;
-        results = await self._request(&#34;v2/settings/configuration&#34;)
-        try:
-            return SystemConfiguration.from_dict(results[&#34;configuration&#34;])
-        except KeyError:
-            raise UnmanicError(&#34;Unable to get system configuration, key not found&#34;)
-        except TypeError:
-            raise UnmanicError(&#34;Unable to get system configuration, type error, no results&#34;)
 
     async def __aenter__(self) -&gt; &#34;Unmanic&#34;:
         &#34;&#34;&#34;Async enter.&#34;&#34;&#34;
@@ -671,21 +655,6 @@ class Unmanic(Client):
         except TypeError:
             raise UnmanicError(&#34;Unable to get task history, type error, no results&#34;)
 
-    async def get_system_configuration(self) -&gt; SystemConfiguration:
-        &#34;&#34;&#34;
-        Get system configuration
-
-        Returns:
-            Dict: SystemConfiguration
-        &#34;&#34;&#34;
-        results = await self._request(&#34;v2/settings/configuration&#34;)
-        try:
-            return SystemConfiguration.from_dict(results[&#34;configuration&#34;])
-        except KeyError:
-            raise UnmanicError(&#34;Unable to get system configuration, key not found&#34;)
-        except TypeError:
-            raise UnmanicError(&#34;Unable to get system configuration, type error, no results&#34;)
-
     async def __aenter__(self) -&gt; &#34;Unmanic&#34;:
         &#34;&#34;&#34;Async enter.&#34;&#34;&#34;
         return self
@@ -786,36 +755,6 @@ class Unmanic(Client):
         raise UnmanicError(&#34;Unable to get Unmanic settings, key not found&#34;)
     except TypeError:
         raise UnmanicError(&#34;Unable to get Unmanic settings, type error, no results&#34;)</code></pre>
-</details>
-</dd>
-<dt id="unmanic_api.unmanic.Unmanic.get_system_configuration"><code class="name flex">
-<span>async def <span class="ident">get_system_configuration</span></span>(<span>self) ‑> <a title="unmanic_api.models.SystemConfiguration" href="models.html#unmanic_api.models.SystemConfiguration">SystemConfiguration</a></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get system configuration</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>Dict</code></dt>
-<dd>SystemConfiguration</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">async def get_system_configuration(self) -&gt; SystemConfiguration:
-    &#34;&#34;&#34;
-    Get system configuration
-
-    Returns:
-        Dict: SystemConfiguration
-    &#34;&#34;&#34;
-    results = await self._request(&#34;v2/settings/configuration&#34;)
-    try:
-        return SystemConfiguration.from_dict(results[&#34;configuration&#34;])
-    except KeyError:
-        raise UnmanicError(&#34;Unable to get system configuration, key not found&#34;)
-    except TypeError:
-        raise UnmanicError(&#34;Unable to get system configuration, type error, no results&#34;)</code></pre>
 </details>
 </dd>
 <dt id="unmanic_api.unmanic.Unmanic.get_task_history"><code class="name flex">
@@ -1237,7 +1176,6 @@ class Unmanic(Client):
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_installation_name" href="#unmanic_api.unmanic.Unmanic.get_installation_name">get_installation_name</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_pending_tasks" href="#unmanic_api.unmanic.Unmanic.get_pending_tasks">get_pending_tasks</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_settings" href="#unmanic_api.unmanic.Unmanic.get_settings">get_settings</a></code></li>
-<li><code><a title="unmanic_api.unmanic.Unmanic.get_system_configuration" href="#unmanic_api.unmanic.Unmanic.get_system_configuration">get_system_configuration</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_task_history" href="#unmanic_api.unmanic.Unmanic.get_task_history">get_task_history</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_version" href="#unmanic_api.unmanic.Unmanic.get_version">get_version</a></code></li>
 <li><code><a title="unmanic_api.unmanic.Unmanic.get_workers_count" href="#unmanic_api.unmanic.Unmanic.get_workers_count">get_workers_count</a></code></li>
