@@ -103,8 +103,6 @@ class Unmanic(Client):
             return results.installation_name
         except UnmanicError as e:
             raise UnmanicError(f&#34;Unable to get Unmanic installation name: {e}&#34;)
-        except:
-            raise UnmanicError(&#34;Unable to get Unmanic installation name&#34;)
 
     async def get_version(self) -&gt; str:
         &#34;&#34;&#34;
@@ -269,8 +267,6 @@ class Unmanic(Client):
             return results.number_of_workers
         except UnmanicError as e:
             raise UnmanicError(f&#34;Unable to get worker count: {e}&#34;)
-        except:
-            raise UnmanicError(&#34;Unable to get worker count&#34;)
 
     async def set_workers_count(self, number_of_workers: int) -&gt; bool:
         &#34;&#34;&#34;
@@ -287,8 +283,6 @@ class Unmanic(Client):
             return await self.set_settings({&#39;number_of_workers&#39;: number_of_workers})
         except UnmanicError as e:
             raise UnmanicError(f&#34;Unable to set worker count: {e}&#34;)
-        except:
-            raise UnmanicError(&#34;Unable to set worker count&#34;)
 
     async def trigger_library_scan(self) -&gt; bool:
         &#34;&#34;&#34;
@@ -427,8 +421,6 @@ class Unmanic(Client):
             return results.installation_name
         except UnmanicError as e:
             raise UnmanicError(f&#34;Unable to get Unmanic installation name: {e}&#34;)
-        except:
-            raise UnmanicError(&#34;Unable to get Unmanic installation name&#34;)
 
     async def get_version(self) -&gt; str:
         &#34;&#34;&#34;
@@ -593,8 +585,6 @@ class Unmanic(Client):
             return results.number_of_workers
         except UnmanicError as e:
             raise UnmanicError(f&#34;Unable to get worker count: {e}&#34;)
-        except:
-            raise UnmanicError(&#34;Unable to get worker count&#34;)
 
     async def set_workers_count(self, number_of_workers: int) -&gt; bool:
         &#34;&#34;&#34;
@@ -611,8 +601,6 @@ class Unmanic(Client):
             return await self.set_settings({&#39;number_of_workers&#39;: number_of_workers})
         except UnmanicError as e:
             raise UnmanicError(f&#34;Unable to set worker count: {e}&#34;)
-        except:
-            raise UnmanicError(&#34;Unable to set worker count&#34;)
 
     async def trigger_library_scan(self) -&gt; bool:
         &#34;&#34;&#34;
@@ -694,9 +682,7 @@ class Unmanic(Client):
         results = await self.get_settings()
         return results.installation_name
     except UnmanicError as e:
-        raise UnmanicError(f&#34;Unable to get Unmanic installation name: {e}&#34;)
-    except:
-        raise UnmanicError(&#34;Unable to get Unmanic installation name&#34;)</code></pre>
+        raise UnmanicError(f&#34;Unable to get Unmanic installation name: {e}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="unmanic_api.unmanic.Unmanic.get_pending_tasks"><code class="name flex">
@@ -840,9 +826,7 @@ class Unmanic(Client):
         results = await self.get_settings()
         return results.number_of_workers
     except UnmanicError as e:
-        raise UnmanicError(f&#34;Unable to get worker count: {e}&#34;)
-    except:
-        raise UnmanicError(&#34;Unable to get worker count&#34;)</code></pre>
+        raise UnmanicError(f&#34;Unable to get worker count: {e}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="unmanic_api.unmanic.Unmanic.get_workers_status"><code class="name flex">
@@ -1073,9 +1057,7 @@ class Unmanic(Client):
     try:
         return await self.set_settings({&#39;number_of_workers&#39;: number_of_workers})
     except UnmanicError as e:
-        raise UnmanicError(f&#34;Unable to set worker count: {e}&#34;)
-    except:
-        raise UnmanicError(&#34;Unable to set worker count&#34;)</code></pre>
+        raise UnmanicError(f&#34;Unable to set worker count: {e}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="unmanic_api.unmanic.Unmanic.terminate_worker"><code class="name flex">
