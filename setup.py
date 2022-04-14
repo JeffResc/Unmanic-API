@@ -10,7 +10,7 @@ def get_version():
     """Get current version from code."""
     regex = r"__version__\s=\s\"(?P<version>[\d\.]+?)\""
     path = ("unmanic_api", "__version__.py")
-    return re.search(regex, read(*path)).group("version")
+    return re.search(regex, read(*path))["version"]
 
 def read(*parts):
     """Read file."""
@@ -39,7 +39,7 @@ setup(
     description="Asynchronous Python client for Unmanic.",
     include_package_data=True,
     version=get_version(),
-    install_requires=list(val.strip() for val in open("requirements.txt")),
+    install_requires=[val.strip() for val in open("requirements.txt")],
     keywords=["unmanic", "api", "async", "client"],
     license="MIT license",
     long_description_content_type="text/markdown",
