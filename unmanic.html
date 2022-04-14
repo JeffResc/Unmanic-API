@@ -130,7 +130,12 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;v2/workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(
+            &#34;v2/workers/worker/pause&#34;,
+            method=&#39;POST&#39;,
+            data=json.dumps({&#34;worker_id&#34;: worker_id}),
+        )
+
         try:
             return results[&#39;success&#39;]
         except KeyError:
@@ -164,7 +169,12 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;v2/workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(
+            &#34;v2/workers/worker/resume&#34;,
+            method=&#39;POST&#39;,
+            data=json.dumps({&#34;worker_id&#34;: worker_id}),
+        )
+
         try:
             return results[&#39;success&#39;]
         except KeyError:
@@ -448,7 +458,12 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;v2/workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(
+            &#34;v2/workers/worker/pause&#34;,
+            method=&#39;POST&#39;,
+            data=json.dumps({&#34;worker_id&#34;: worker_id}),
+        )
+
         try:
             return results[&#39;success&#39;]
         except KeyError:
@@ -482,7 +497,12 @@ class Unmanic(Client):
         Returns:
             bool: True if successful.
         &#34;&#34;&#34;
-        results = await self._request(f&#34;v2/workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+        results = await self._request(
+            &#34;v2/workers/worker/resume&#34;,
+            method=&#39;POST&#39;,
+            data=json.dumps({&#34;worker_id&#34;: worker_id}),
+        )
+
         try:
             return results[&#39;success&#39;]
         except KeyError:
@@ -916,7 +936,12 @@ class Unmanic(Client):
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(f&#34;v2/workers/worker/pause&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+    results = await self._request(
+        &#34;v2/workers/worker/pause&#34;,
+        method=&#39;POST&#39;,
+        data=json.dumps({&#34;worker_id&#34;: worker_id}),
+    )
+
     try:
         return results[&#39;success&#39;]
     except KeyError:
@@ -982,7 +1007,12 @@ class Unmanic(Client):
     Returns:
         bool: True if successful.
     &#34;&#34;&#34;
-    results = await self._request(f&#34;v2/workers/worker/resume&#34;, method=&#39;POST&#39;, data=json.dumps({&#34;worker_id&#34;: worker_id}))
+    results = await self._request(
+        &#34;v2/workers/worker/resume&#34;,
+        method=&#39;POST&#39;,
+        data=json.dumps({&#34;worker_id&#34;: worker_id}),
+    )
+
     try:
         return results[&#39;success&#39;]
     except KeyError:
